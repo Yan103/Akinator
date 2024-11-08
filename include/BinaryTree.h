@@ -14,13 +14,22 @@ struct Node {
 };
 
 struct Tree {
-    Node*  root;
-    size_t size;
+    Node*    root;
+    size_t   size;
 };
 
-Node* CreateNode(NodeData value);
+typedef NodeData (*CompType) (NodeData, NodeData);
 
-Tree* TreeCtor();
+Tree* TreeCtor(NodeData root_value);
+
+Node* CreateNode(NodeData value, Node* left, Node* right);
+
+int NumberCompare(int first_num, int second_num);
+
+FuncReturnCode TreeInsertNode(Tree* tree, Node* node, NodeData value, CompType comp_func);
+
 FuncReturnCode TreeDtor(Tree* tree);
+
+FuncReturnCode NodeDtor(Node* node);
 
 #endif // BINARY_TREE_H

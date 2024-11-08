@@ -6,6 +6,8 @@
 #ifndef DEFAULT_H
 #define DEFAULT_H
 
+#include <cstdlib>
+
 #define END         "\033[0;0m"
 #define BLACK_CLR   "\033[1;30m"
 #define RED_CLR     "\033[1;31m"
@@ -30,7 +32,7 @@
 
 /// @brief Passes data about the file, function, and string to the my_assert function
 #ifdef DEBUG
-    #define ASSERT(condition, text_error) my_assert(condition, text_error, __FILE__, __func__, __LINE__)
+    #define ASSERT(condition, text_error) my_assert(condition, text_error, __FILE__, __func__, __LINE__);
 #else
     #define ASSERT(condition, text_error) {}
 #endif
