@@ -5,6 +5,8 @@
 
 #include "FuncReturnCode.h"
 
+// TODO documentation
+
 typedef int NodeData;
 
 struct Node {

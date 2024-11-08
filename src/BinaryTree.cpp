@@ -6,6 +6,8 @@
 #include "FuncReturnCode.h"
 #include "TreeDump.h"
 
+// TODO documentation and checks
+
 Tree* TreeCtor(NodeData root_value) {
     Tree* tree = (Tree*) calloc(1, sizeof(Tree));
     if (!tree) {
