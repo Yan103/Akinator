@@ -1,14 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 
-#include "Default.h"
-#include "BinaryTree.h"
-#include "FuncReturnCode.h"
 #include "TreeDump.h"
 
-// TODO documentation and checks
+Tree* TreeCtor(Node* root) {
+    ASSERT(root != NULL, "NULL POINTER WAS PASSED!\n")
 
-Tree* TreeCtor(NodeData root_value) {
     Tree* tree = (Tree*) calloc(1, sizeof(Tree));
     if (!tree) {
         printf(RED("MEMORY ERROR!\n"));
@@ -16,21 +15,14 @@ Tree* TreeCtor(NodeData root_value) {
         return NULL;
     }
 
-    tree->root = CreateNode(root_value, NULL, NULL);
-    if (!tree->root) {
-        printf(RED("MEMORY ERROR!\n"));
-
-        return NULL;
-    }
-
+    tree->root = root;
     tree->size = 1;
-    TREE_DUMP(tree, "%s (%d)", __func__, root_value)
 
     return tree;
 }
 
 
-Node* CreateNode(NodeData value, Node* left, Node* right) {
+Node* CreateNode(NodeData value) {
     Node* node = (Node*) calloc(1, sizeof(Node));
     if (!node) {
         printf(RED("MEMORY ERROR!\n"));
@@ -39,20 +31,21 @@ Node* CreateNode(NodeData value, Node* left, Node* right) {
     }
 
     node->data  = value;
-    node->left  =  left;
-    node->right = right;
 
     return node;
 }
 
-int NumberCompare(int first_num, int second_num) {
-    return first_num - second_num;
+int string_compare(const NodeData first_string, const NodeData secong_string) {
+    ASSERT(first_string != NULL, "NULL PONTER WAS PASSED!\n")
+    ASSERT(secong_string != NULL, "NULL PONTER WAS PASSED!\n")
+
+    return strcasecmp(first_string, secong_string);
 }
 
 FuncReturnCode TreeInsertNode(Tree* tree, Node* node, NodeData value, CompType comp_func) {
     ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n")
 
-    TREE_DUMP(tree, "Start: %s (%d)", __func__, value)
+    TREE_DUMP(tree, "Start: %s (%s)", __func__, value)
 
     int comp_res = comp_func(value, node->data);
 
@@ -60,24 +53,25 @@ FuncReturnCode TreeInsertNode(Tree* tree, Node* node, NodeData value, CompType c
         if (node->left) {
             TreeInsertNode(tree, node->left, value, comp_func);
         } else {
-            node->left = CreateNode(value, NULL, NULL);
+            node->left = CreateNode(value);
         }
     } else {
         if (node->right) {
             TreeInsertNode(tree, node->right, value, comp_func);
         } else {
-            node->right = CreateNode(value, NULL, NULL);
+            node->right = CreateNode(value);
         }
     }
 
     tree->size += 1;
 
-    TREE_DUMP(tree, "End: %s (%d)", __func__, value)
+    TREE_DUMP(tree, "End: %s (%s)", __func__, value)
 
     return SUCCESS;
 }
 
 FuncReturnCode NodeDtor(Node* node) {
+    FREE(node->data)
     if (node->left) {
         NodeDtor(node->left);
     }
@@ -98,4 +92,63 @@ FuncReturnCode TreeDtor(Tree* tree) {
     FREE(tree)
 
     return SUCCESS;
+}
+
+Node* ReadSubTree(FILE* filename) {
+    ASSERT(filename != NULL, "NULL POINTER WAS PASSED!\n")
+
+    int symbol = 0;
+
+    //* Skip spaces
+    while (isspace(symbol = fgetc(filename))) {
+        ;
+    }
+
+    if (symbol == '*') {
+
+        return NULL;
+    } else if (symbol != '{') {
+        printf(RED("%s: unknown action symbol %c\n"), __func__, symbol);
+
+        return NULL; //abort() ?
+    }
+
+    char* node_data = ReadNodeData(filename);
+    Node* node = CreateNode(node_data); // create node
+
+    node->left  = ReadSubTree(filename);
+    node->right = ReadSubTree(filename);
+
+    while ((symbol = fgetc(filename)) != '}'){
+        ;
+    }
+
+    return node;
+}
+
+char* ReadNodeData(FILE* filename) {
+    ASSERT(filename != NULL, "NULL POINTER WAS PASSED!\n")
+
+    char symbol = 0;
+    while (isspace(symbol = fgetc(filename))){
+        ;
+    }
+
+    if (symbol != '"') {
+        printf(RED("ERROR WITH READ TREE FROM FILE1\n"));
+
+        // abort() ?
+    }
+
+    char* node_data = (char*) calloc(1, MAX_DATA_SIZE * sizeof(char));
+    if (!node_data) {
+        printf(RED("MEMORY ERROR!\n"));
+
+        // abort() ?
+    }
+
+    fscanf(filename, "%[^\"]", node_data);
+    symbol = fgetc(filename);
+
+    return node_data;
 }

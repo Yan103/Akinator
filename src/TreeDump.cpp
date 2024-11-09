@@ -94,14 +94,14 @@ FuncReturnCode CreateDotNode(FILE* filename, Node* node) {
     ASSERT(node     != NULL, "NULL POINTER WAS PASSED!\n")
     ASSERT(filename != NULL, "NULL POINTER WAS PASSED!\n")
 
-    fprintf(filename, "\tnode%p[shape=Mrecord,style=\"rounded,filled\",fillcolor=\"lightgreen\",label=\"{data: %d | { left: %p | right: %p }}\"]", node, node->data, node->left, node->right);
+    fprintf(filename, "\tnode%p[shape=Mrecord,style=\"rounded,filled\",fillcolor=\"lightgreen\",label=\"{data: %s | { left: %p | right: %p }}\"]\n", node, node->data, node->left, node->right);
     if (node->left) {
-        fprintf(filename, "\tnode%p->node%p\n", node, node->left);
+        fprintf(filename, "\tnode%p->node%p[xlabel=\"No\"]\n", node, node->left);
         CreateDotNode(filename, node->left);
     }
 
     if (node->right) {
-        fprintf(filename, "\tnode%p->node%p\n", node, node->right);
+        fprintf(filename, "\tnode%p->node%p[xlabel=\"Yes\"]\n", node, node->right);
         CreateDotNode(filename, node->right);
     }
 
@@ -117,9 +117,9 @@ FuncReturnCode MakeHTMLDump(FILE* html_file, Tree* tree, int dump_id, const char
 
     fprintf(html_file, "DUMPED %d-%02d-%02d %02d:%02d:%02d from function %s, %d line \n    ",
             tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, func, line);
-    fprintf(html_file, "Tree size: %lu nodes\n    ", tree->size);
+    fprintf(html_file, "Tree size: %lu nodes\n", tree->size);
 
-    fprintf(html_file, "    <img src=dump%d.png>", dump_id);
+    fprintf(html_file, "\t<img src=dump%d.png>", dump_id);
 
     return SUCCESS;
 }

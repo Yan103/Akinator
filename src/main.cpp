@@ -1,18 +1,29 @@
 #include <stdio.h>
+#include <time.h>
 
 #include "FuncReturnCode.h"
 #include "BinaryTree.h"
 #include "Default.h"
 
-int main() {
-    Tree* tree = TreeCtor(50);
+#include "TreeDump.h"
 
-    TreeInsertNode(tree, tree->root, 70, NumberCompare);
-    TreeInsertNode(tree, tree->root, 80, NumberCompare);
-    TreeInsertNode(tree, tree->root, 100, NumberCompare);
-    TreeInsertNode(tree, tree->root, 90, NumberCompare);
-    TreeInsertNode(tree, tree->root, 95, NumberCompare);
-    TreeInsertNode(tree, tree->root, 110, NumberCompare);
+const char* DATABASE = "/home/yan/projects/Akinator/WordBase/wordstest.txt";
+
+int main() {
+    FILE* database = fopen(DATABASE, "r");
+    if (!database) {
+        printf(RED("FILE ERROR!\n"));
+
+        return FILE_ERROR;
+    }
+
+    srand((unsigned int)time(NULL));
+
+    Tree* tree = TreeCtor(ReadSubTree(database));
+
+    fclose(database);
+
+    TREE_DUMP(tree, "%s", __func__)
 
     TreeDtor(tree);
 

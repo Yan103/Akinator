@@ -2,12 +2,17 @@
 #define BINARY_TREE_H
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 
+#include "Default.h"
+#include "BinaryTree.h"
 #include "FuncReturnCode.h"
 
 // TODO documentation
 
-typedef int NodeData;
+typedef char* NodeData;
 
 struct Node {
     NodeData data;
@@ -20,18 +25,24 @@ struct Tree {
     size_t   size;
 };
 
-typedef NodeData (*CompType) (NodeData, NodeData);
+const size_t MAX_DATA_SIZE = 500;
 
-Tree* TreeCtor(NodeData root_value);
+typedef int (*CompType) (const NodeData, const NodeData);
 
-Node* CreateNode(NodeData value, Node* left, Node* right);
+Tree* TreeCtor(Node* root);
 
-int NumberCompare(int first_num, int second_num);
+Node* CreateNode(NodeData value);
+
+int string_compare(const NodeData first_string, const NodeData secong_string);
 
 FuncReturnCode TreeInsertNode(Tree* tree, Node* node, NodeData value, CompType comp_func);
 
 FuncReturnCode TreeDtor(Tree* tree);
 
 FuncReturnCode NodeDtor(Node* node);
+
+Node* ReadSubTree(FILE* filename);
+
+char* ReadNodeData(FILE* filename);
 
 #endif // BINARY_TREE_H

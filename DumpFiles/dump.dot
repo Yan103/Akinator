@@ -3,11 +3,26 @@ digraph tree{
     splines=ortho
     info[label="root=0x603000000040"]
 
-  	node0x603000000040[shape=Mrecord,style="rounded,filled",fillcolor="lightgreen",label="{data: 50 | { left: (nil) | right: 0x603000000220 }}"]	node0x603000000040->node0x603000000220
-	node0x603000000220[shape=Mrecord,style="rounded,filled",fillcolor="lightgreen",label="{data: 70 | { left: (nil) | right: 0x603000000250 }}"]	node0x603000000220->node0x603000000250
-	node0x603000000250[shape=Mrecord,style="rounded,filled",fillcolor="lightgreen",label="{data: 80 | { left: (nil) | right: 0x603000000280 }}"]	node0x603000000250->node0x603000000280
-	node0x603000000280[shape=Mrecord,style="rounded,filled",fillcolor="lightgreen",label="{data: 100 | { left: 0x6030000002b0 | right: 0x603000000310 }}"]	node0x603000000280->node0x6030000002b0
-	node0x6030000002b0[shape=Mrecord,style="rounded,filled",fillcolor="lightgreen",label="{data: 90 | { left: (nil) | right: 0x6030000002e0 }}"]	node0x6030000002b0->node0x6030000002e0
-	node0x6030000002e0[shape=Mrecord,style="rounded,filled",fillcolor="lightgreen",label="{data: 95 | { left: (nil) | right: (nil) }}"]	node0x603000000280->node0x603000000310
-	node0x603000000310[shape=Mrecord,style="rounded,filled",fillcolor="lightgreen",label="{data: 110 | { left: (nil) | right: (nil) }}"]
+  	node0x603000000040[shape=Mrecord,style="rounded,filled",fillcolor="lightgreen",label="{data: At the MIPT | { left: 0x603000000070 | right: 0x603000000160 }}"]
+	node0x603000000040->node0x603000000070[xlabel="No"]
+	node0x603000000070[shape=Mrecord,style="rounded,filled",fillcolor="lightgreen",label="{data: Rough | { left: 0x6030000000a0 | right: 0x6030000000d0 }}"]
+	node0x603000000070->node0x6030000000a0[xlabel="No"]
+	node0x6030000000a0[shape=Mrecord,style="rounded,filled",fillcolor="lightgreen",label="{data: Cafeteria | { left: (nil) | right: (nil) }}"]
+	node0x603000000070->node0x6030000000d0[xlabel="Yes"]
+	node0x6030000000d0[shape=Mrecord,style="rounded,filled",fillcolor="lightgreen",label="{data: Her | { left: 0x603000000100 | right: 0x603000000130 }}"]
+	node0x6030000000d0->node0x603000000100[xlabel="No"]
+	node0x603000000100[shape=Mrecord,style="rounded,filled",fillcolor="lightgreen",label="{data: History | { left: (nil) | right: (nil) }}"]
+	node0x6030000000d0->node0x603000000130[xlabel="Yes"]
+	node0x603000000130[shape=Mrecord,style="rounded,filled",fillcolor="lightgreen",label="{data: DED | { left: (nil) | right: (nil) }}"]
+	node0x603000000040->node0x603000000160[xlabel="Yes"]
+	node0x603000000160[shape=Mrecord,style="rounded,filled",fillcolor="lightgreen",label="{data: Animal | { left: 0x603000000190 | right: 0x603000000220 }}"]
+	node0x603000000160->node0x603000000190[xlabel="No"]
+	node0x603000000190[shape=Mrecord,style="rounded,filled",fillcolor="lightgreen",label="{data: Studies | { left: 0x6030000001c0 | right: 0x6030000001f0 }}"]
+	node0x603000000190->node0x6030000001c0[xlabel="No"]
+	node0x6030000001c0[shape=Mrecord,style="rounded,filled",fillcolor="lightgreen",label="{data: Student | { left: (nil) | right: (nil) }}"]
+	node0x603000000190->node0x6030000001f0[xlabel="Yes"]
+	node0x6030000001f0[shape=Mrecord,style="rounded,filled",fillcolor="lightgreen",label="{data: Student in session | { left: (nil) | right: (nil) }}"]
+	node0x603000000160->node0x603000000220[xlabel="Yes"]
+	node0x603000000220[shape=Mrecord,style="rounded,filled",fillcolor="lightgreen",label="{data: Cat | { left: (nil) | right: (nil) }}"]
+
 }
