@@ -25,6 +25,8 @@ int main() {
 
     TREE_DUMP(tree, "%s", __func__)
 
+    PlayGame(tree->root);
+
     TreeDtor(tree);
 
     return SUCCESS;

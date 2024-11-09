@@ -3,6 +3,8 @@
 #include <string.h>
 #include <ctype.h>
 
+#include <unistd.h>
+
 #include "TreeDump.h"
 
 Tree* TreeCtor(Node* root) {
@@ -109,25 +111,11 @@ Node* ReadSubTree(FILE* filename) {
         return NULL;
     } else if (symbol != '{') {
         printf(RED("%s: unknown action symbol %c\n"), __func__, symbol);
-        printf("%c\n", fgetc(filename));
-        printf("%c\n", fgetc(filename));
-        printf("%c\n", fgetc(filename));
-        printf("%c\n", fgetc(filename));
-        printf("%c\n", fgetc(filename));
-        printf("%c\n", fgetc(filename));
-        printf("%c\n", fgetc(filename));
-        printf("%c\n", fgetc(filename));
-        printf("%c\n", fgetc(filename));
-        printf("%c\n", fgetc(filename));
-        printf("%c\n", fgetc(filename));
-        printf("%c\n", fgetc(filename));
-
 
         return NULL; //abort() ?
     }
 
-    char* node_data = ReadNodeData(filename);
-    Node* node = CreateNode(node_data); // create node
+    Node* node = CreateNode(ReadNodeData(filename)); // create node
 
     node->left  = ReadSubTree(filename);
     node->right = ReadSubTree(filename);
@@ -164,4 +152,35 @@ char* ReadNodeData(FILE* filename) {
     symbol = fgetc(filename);
 
     return node_data;
+}
+
+FuncReturnCode PlayGame(Node* node) {
+    ASSERT(node != NULL, "NULL POINTER WAS PASSED!\n")
+
+    char user_ans[MAX_USER_ANS] = {};
+
+    while (node->left != NULL || node->right != NULL) {
+        printf(YELLOW("%s? [yes/no]\n"), node->data);
+        while (scanf("%s", user_ans)) {
+            if (strcasecmp(user_ans, "yes") == 0 || strcasecmp(user_ans, "no") == 0) {
+                break;
+            } else {
+                printf(RED("Please, answer only \"yes\" or \"no\")\n"));
+                sleep(1);
+                printf(YELLOW("%s? [yes/no]\n"), node->data);
+            }
+        }
+
+        if (strcasecmp(user_ans, "yes") == 0) {
+            node = node->right;
+        } else {
+            node = node->left;
+        }
+    }
+
+    printf("I think, it is...\n");
+    sleep(2);
+    printf(GREEN("%s\n"), node->data);
+
+    return SUCCESS;
 }

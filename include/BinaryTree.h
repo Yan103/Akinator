@@ -12,6 +12,8 @@
 
 // TODO documentation
 
+const size_t MAX_USER_ANS = 20;
+
 typedef char* NodeData;
 
 struct Node {
@@ -44,5 +46,7 @@ FuncReturnCode NodeDtor(Node* node);
 Node* ReadSubTree(FILE* filename);
 
 char* ReadNodeData(FILE* filename);
+
+FuncReturnCode PlayGame(Node* node);
 
 #endif // BINARY_TREE_H
