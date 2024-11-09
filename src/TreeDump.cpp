@@ -94,7 +94,7 @@ FuncReturnCode CreateDotNode(FILE* filename, Node* node) {
     ASSERT(node     != NULL, "NULL POINTER WAS PASSED!\n")
     ASSERT(filename != NULL, "NULL POINTER WAS PASSED!\n")
 
-    fprintf(filename, "\tnode%p[shape=Mrecord,style=\"rounded,filled\",fillcolor=\"lightgreen\",label=\"{data: %s | { left: %p | right: %p }}\"]\n", node, node->data, node->left, node->right);
+    fprintf(filename, "\tnode%p[shape=Mrecord,style=\"rounded,filled\",fillcolor=\"lightgreen\",label=\"{ %s }\"]\n", node, node->data);
     if (node->left) {
         fprintf(filename, "\tnode%p->node%p[xlabel=\"No\"]\n", node, node->left);
         CreateDotNode(filename, node->left);

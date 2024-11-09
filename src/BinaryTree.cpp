@@ -109,6 +109,19 @@ Node* ReadSubTree(FILE* filename) {
         return NULL;
     } else if (symbol != '{') {
         printf(RED("%s: unknown action symbol %c\n"), __func__, symbol);
+        printf("%c\n", fgetc(filename));
+        printf("%c\n", fgetc(filename));
+        printf("%c\n", fgetc(filename));
+        printf("%c\n", fgetc(filename));
+        printf("%c\n", fgetc(filename));
+        printf("%c\n", fgetc(filename));
+        printf("%c\n", fgetc(filename));
+        printf("%c\n", fgetc(filename));
+        printf("%c\n", fgetc(filename));
+        printf("%c\n", fgetc(filename));
+        printf("%c\n", fgetc(filename));
+        printf("%c\n", fgetc(filename));
+
 
         return NULL; //abort() ?
     }

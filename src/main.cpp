@@ -7,7 +7,7 @@
 
 #include "TreeDump.h"
 
-const char* DATABASE = "/home/yan/projects/Akinator/WordBase/wordstest.txt";
+const char* DATABASE = "/home/yan/projects/Akinator/WordBase/words.txt";
 
 int main() {
     FILE* database = fopen(DATABASE, "r");
