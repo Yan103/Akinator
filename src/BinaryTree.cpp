@@ -182,7 +182,7 @@ FuncReturnCode PlayGame(Node* node) {
     system("espeak \"I think, it is...\"");
     sleep(2);
     char answer[100] = {};
-    sprintf(answer, "espeak %s", node->data);
+    sprintf(answer, "espeak \"%s\"", node->data);
     system(answer);
     printf("I think, it is... "),
     printf(GREEN("%s\n"), node->data);
