@@ -189,3 +189,32 @@ FuncReturnCode PlayGame(Node* node) {
 
     return SUCCESS;
 }
+
+FuncReturnCode WriteTree(FILE* filename, Tree* tree) {
+    ASSERT(filename != NULL, "NULL POINTER WAS PASSED!\n")
+    ASSERT(tree     != NULL, "NULL POINTER WAS PASSED!\n")
+
+    WriteSubTree(filename, tree->root);
+
+    return SUCCESS;
+}
+
+FuncReturnCode WriteSubTree(FILE* filename, Node* node) {
+    ASSERT(filename != NULL, "NULL POINTER WAS PASSED!\n")
+
+    if (node == NULL) {
+        fprintf(filename, "* ");
+
+        return SUCCESS;
+    }
+
+    fprintf(filename, "{ ");
+
+    fprintf(filename, "\"%s\" ", node->data);
+    WriteSubTree(filename, node->left);
+    WriteSubTree(filename, node->right);
+
+    fprintf(filename, " }");
+
+    return SUCCESS;
+}

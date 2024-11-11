@@ -49,4 +49,8 @@ char* ReadNodeData(FILE* filename);
 
 FuncReturnCode PlayGame(Node* node);
 
+FuncReturnCode WriteSubTree(FILE* filename, Node* node);
+
+FuncReturnCode WriteTree(FILE* filename, Tree* tree);
+
 #endif // BINARY_TREE_H
