@@ -178,14 +178,54 @@ FuncReturnCode PlayGame(Node* node) {
         }
     }
 
-    //printf("I think, it is...\n");
     system("espeak \"I think, it is...\"");
     sleep(2);
     char answer[100] = {};
     sprintf(answer, "espeak \"%s\"", node->data);
     system(answer);
     printf("I think, it is... "),
-    printf(GREEN("%s\n"), node->data);
+    printf(GREEN("%s\n"), node->data);  //* test
+
+    printf("Did I guess right? [yes/no]\n");
+    //! next code is CRINGE (I know it, I will make a few functions in the morning)
+    while (scanf("%s", user_ans)) {
+            if (strcasecmp(user_ans, "yes") == 0) {
+                printf(GREEN("Oh yes, I won again!\n"));
+
+                break;
+            } else if (strcasecmp(user_ans, "no") == 0) {
+                printf("Please, write the word that you have made up your mind\n");
+
+                char* new_word = (char*) calloc(1, MAX_DATA_SIZE * sizeof(char));
+                if (!new_word) {
+                    printf(RED("MEMORY ERROR!\n"));
+
+                    return MEMORY_ERROR;
+                }
+                scanf("%s", new_word);
+
+                printf("Please, write how %s differs from %s\n", new_word, node->data);
+
+                char* new_question = (char*) calloc(1, MAX_DATA_SIZE * sizeof(char));
+                if (!new_question) {
+                    printf(RED("MEMORY ERROR!\n"));
+
+                    return MEMORY_ERROR;
+                }
+                scanf("%s", new_question);
+
+
+                node->left  = CreateNode(node->data);
+                node->right = CreateNode(new_word);
+                node->data  = new_question;
+
+                break;
+            } else {
+                printf(RED("Please, answer only \"yes\" or \"no\")\n"));
+                sleep(1);
+                printf(YELLOW("%s? [yes/no]\n"), node->data);
+            }
+        }
 
     return SUCCESS;
 }
@@ -214,7 +254,7 @@ FuncReturnCode WriteSubTree(FILE* filename, Node* node) {
     WriteSubTree(filename, node->left);
     WriteSubTree(filename, node->right);
 
-    fprintf(filename, " }");
+    fprintf(filename, "} ");
 
     return SUCCESS;
 }
