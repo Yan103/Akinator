@@ -4,15 +4,18 @@
 #include "FuncReturnCode.h"
 #include "BinaryTree.h"
 #include "Default.h"
+#include "Akinator.h"
 
 #include "TreeDump.h"
 
 const char* DATABASE = "/home/yan/projects/Akinator/WordBase/words.txt";
-const char* SAVEFILE = "/home/yan/projects/Akinator/WordBase/savedtree.txt";
 
 // TODO documentation and README
+// TODO Definition, difference, Similarities, Graph Dump
 
 int main() {
+    //system("convert /home/yan/projects/Akinator/DumpFiles/dump1943778939.png -resize 60% /home/yan/projects/Akinator/DumpFiles/dump1943778939.png");
+    //system("open /home/yan/projects/Akinator/DumpFiles/dump1943778939.png");
     srand((unsigned int)time(NULL));
 
     FILE* database = fopen(DATABASE, "r");
@@ -27,20 +30,7 @@ int main() {
 
     fclose(database);
 
-    TREE_DUMP(tree, "%s", __func__)
-
-    StartAkinatorGame(tree);
-
-    TREE_DUMP(tree, "%s", __func__)
-
-    FILE* savefile = fopen(SAVEFILE, "w");
-    if (!savefile) {
-        printf(RED("FILE ERROR!\n"));
-
-        return FILE_ERROR;
-    }
-
-    WriteTree(savefile, tree);
+    StartAkinator(tree);
 
     TreeDtor(tree);
 

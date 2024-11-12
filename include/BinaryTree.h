@@ -47,17 +47,7 @@ Node* ReadSubTree(FILE* filename);
 
 char* ReadNodeData(FILE* filename);
 
-FuncReturnCode PlayGame(Tree* tree, Node* node);
-
-void StartAkinatorGame(Tree* tree);
-
 size_t TreeNodesCount();
-
-FuncReturnCode AkinatorAddUnknownWord(Tree* tree, Node* node);
-
-Node* AkinatorChoiceNode(Node* node, char* user_ans);
-
-FuncReturnCode AkinatorEndGame(Tree* tree, Node* node, char* user_ans);
 
 FuncReturnCode WriteSubTree(FILE* filename, Node* node);
 
