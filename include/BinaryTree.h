@@ -49,6 +49,8 @@ char* ReadNodeData(FILE* filename);
 
 FuncReturnCode PlayGame(Node* node);
 
+void StartAkinatorGame(Tree* tree);
+
 FuncReturnCode WriteSubTree(FILE* filename, Node* node);
 
 FuncReturnCode WriteTree(FILE* filename, Tree* tree);

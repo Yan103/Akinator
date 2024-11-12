@@ -13,9 +13,10 @@ const char* SAVEFILE = "/home/yan/projects/Akinator/WordBase/savedtree.txt";
 // TODO start function with description, rules and n-attempts to play (ask user about continue in the end of game)
 // TODO documentation and README
 // TODO ubrat' ves' crinzh iz coda
-// TODO update dump (nodes with words -> another colour)
 
 int main() {
+    srand((unsigned int)time(NULL));
+
     FILE* database = fopen(DATABASE, "r");
     if (!database) {
         printf(RED("FILE ERROR!\n"));
@@ -23,15 +24,13 @@ int main() {
         return FILE_ERROR;
     }
 
-    srand((unsigned int)time(NULL));
-
     Tree* tree = TreeCtor(ReadSubTree(database));
 
     fclose(database);
 
     TREE_DUMP(tree, "%s", __func__)
 
-    PlayGame(tree->root);
+    StartAkinatorGame(tree);
 
     TREE_DUMP(tree, "%s", __func__)
 
@@ -41,6 +40,7 @@ int main() {
 
         return FILE_ERROR;
     }
+
     WriteTree(savefile, tree);
 
     TreeDtor(tree);

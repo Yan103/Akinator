@@ -214,7 +214,6 @@ FuncReturnCode PlayGame(Node* node) {
                 }
                 scanf("%s", new_question);
 
-
                 node->left  = CreateNode(node->data);
                 node->right = CreateNode(new_word);
                 node->data  = new_question;
@@ -228,6 +227,35 @@ FuncReturnCode PlayGame(Node* node) {
         }
 
     return SUCCESS;
+}
+
+void StartAkinatorGame(Tree* tree) {
+    ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n")
+    char start_game[50] = {};
+
+    // TODO espeak voice || + time sleep
+    printf(CYAN("Hello, I'm an akinator and I can guess the sport (I know 666 sports) that you guessed!\n"));
+    printf(CYAN("Do you want to start the game? [yes/no]\n"));
+    scanf("%49s", start_game);
+
+    if (strcasecmp(start_game, "yes") == 0) {
+        PlayGame(tree->root);
+
+        while (1) {
+            sleep(2);
+            printf(MAGENTA("Do you want to play again? [yes/no]\n"));
+            scanf("%49s", start_game);
+            if (strcasecmp(start_game, "yes") == 0) {
+                PlayGame(tree->root);
+            } else {
+                printf(YELLOW("Okay, I'm waiting for our next game!\n"));
+
+                break;
+            }
+        }
+    } else {
+        printf(YELLOW("It's very sad, but I hope we'll play again!\n"));
+    }
 }
 
 FuncReturnCode WriteTree(FILE* filename, Tree* tree) {

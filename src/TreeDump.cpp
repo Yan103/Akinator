@@ -94,15 +94,20 @@ FuncReturnCode CreateDotNode(FILE* filename, Node* node) {
     ASSERT(node     != NULL, "NULL POINTER WAS PASSED!\n")
     ASSERT(filename != NULL, "NULL POINTER WAS PASSED!\n")
 
-    fprintf(filename, "\tnode%p[shape=Mrecord,style=\"rounded,filled\",fillcolor=\"lightgreen\",label=\"{ %s }\"]\n", node, node->data);
     if (node->left) {
+        fprintf(filename, "\tnode%p[shape=Mrecord,style=\"rounded,filled\",fillcolor=\"lightgreen\",label=\"{ %s }\"]\n", node, node->data);
         fprintf(filename, "\tnode%p->node%p[xlabel=\"No\"]\n", node, node->left);
         CreateDotNode(filename, node->left);
+    } else {
+        fprintf(filename, "\tnode%p[shape=Mrecord,style=\"rounded,filled\",fillcolor=\"lightpink\",label=\"{ %s }\"]\n", node, node->data);
     }
 
     if (node->right) {
+        fprintf(filename, "\tnode%p[shape=Mrecord,style=\"rounded,filled\",fillcolor=\"lightgreen\",label=\"{ %s }\"]\n", node, node->data);
         fprintf(filename, "\tnode%p->node%p[xlabel=\"Yes\"]\n", node, node->right);
         CreateDotNode(filename, node->right);
+    } else {
+        fprintf(filename, "\tnode%p[shape=Mrecord,style=\"rounded,filled\",fillcolor=\"lightpink\",label=\"{ %s }\"]\n", node, node->data);
     }
 
     return SUCCESS;
