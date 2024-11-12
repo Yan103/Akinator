@@ -10,9 +10,7 @@
 const char* DATABASE = "/home/yan/projects/Akinator/WordBase/words.txt";
 const char* SAVEFILE = "/home/yan/projects/Akinator/WordBase/savedtree.txt";
 
-// TODO start function with description, rules and n-attempts to play (ask user about continue in the end of game)
 // TODO documentation and README
-// TODO ubrat' ves' crinzh iz coda
 
 int main() {
     srand((unsigned int)time(NULL));
@@ -25,6 +23,7 @@ int main() {
     }
 
     Tree* tree = TreeCtor(ReadSubTree(database));
+    tree->size = (TreeNodesCount() - 1) / 2;
 
     fclose(database);
 

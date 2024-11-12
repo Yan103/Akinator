@@ -18,7 +18,7 @@ Tree* TreeCtor(Node* root) {
     }
 
     tree->root = root;
-    tree->size = 1;
+    tree->size = 0;
 
     return tree;
 }
@@ -96,6 +96,13 @@ FuncReturnCode TreeDtor(Tree* tree) {
     return SUCCESS;
 }
 
+size_t TreeNodesCount() {
+    static size_t num = 0;
+    num++;
+
+    return num;
+}
+
 Node* ReadSubTree(FILE* filename) {
     ASSERT(filename != NULL, "NULL POINTER WAS PASSED!\n")
 
@@ -107,6 +114,7 @@ Node* ReadSubTree(FILE* filename) {
     }
 
     if (symbol == '*') {
+        TreeNodesCount();
 
         return NULL;
     } else if (symbol != '{') {
@@ -154,10 +162,64 @@ char* ReadNodeData(FILE* filename) {
     return node_data;
 }
 
-FuncReturnCode PlayGame(Node* node) {
+FuncReturnCode PlayGame(Tree* tree, Node* node) {
+    ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n")
     ASSERT(node != NULL, "NULL POINTER WAS PASSED!\n")
 
     char user_ans[MAX_USER_ANS] = {};
+
+    node = AkinatorChoiceNode(node, user_ans);
+
+    char answer[100] = {};
+
+    system("espeak \"I think, it is...\"");
+    sleep(2);
+    sprintf(answer, "espeak \"%s\"", node->data);
+    system(answer);
+    printf("I think, it is... "),
+    printf(GREEN("%s\n"), node->data);  //* test espeak system
+
+    printf("Did I guess right? [yes/no]\n");
+
+    AkinatorEndGame(tree, node, user_ans);
+
+    return SUCCESS;
+}
+
+FuncReturnCode AkinatorAddUnknownWord(Tree* tree, Node* node) {
+    ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n")
+    ASSERT(node != NULL, "NULL POINTER WAS PASSED!\n")
+
+    char* new_word = (char*) calloc(1, MAX_DATA_SIZE * sizeof(char));
+    if (!new_word) {
+        printf(RED("MEMORY ERROR!\n"));
+
+        return MEMORY_ERROR;
+    }
+    scanf("%s", new_word);
+
+    printf("Please, write how %s differs from %s\n", new_word, node->data);
+
+    char* new_question = (char*) calloc(1, MAX_DATA_SIZE * sizeof(char));
+    if (!new_question) {
+        printf(RED("MEMORY ERROR!\n"));
+
+        return MEMORY_ERROR;
+    }
+    scanf("%s", new_question);
+
+    node->left  = CreateNode(node->data);
+    node->right = CreateNode(new_word);
+    node->data  = new_question;
+
+    tree->size += 1;
+
+    return SUCCESS;
+}
+
+Node* AkinatorChoiceNode(Node* node, char* user_ans) {
+    ASSERT(node     != NULL, "NULL POINTER WAS PASSED!\n")
+    ASSERT(user_ans != NULL, "NULL POINTER WAS PASSED!\n")
 
     while (node->left != NULL || node->right != NULL) {
         printf(YELLOW("%s? [yes/no]\n"), node->data);
@@ -178,53 +240,31 @@ FuncReturnCode PlayGame(Node* node) {
         }
     }
 
-    system("espeak \"I think, it is...\"");
-    sleep(2);
-    char answer[100] = {};
-    sprintf(answer, "espeak \"%s\"", node->data);
-    system(answer);
-    printf("I think, it is... "),
-    printf(GREEN("%s\n"), node->data);  //* test
+    return node;
+}
 
-    printf("Did I guess right? [yes/no]\n");
-    //! next code is CRINGE (I know it, I will make a few functions in the morning)
+FuncReturnCode AkinatorEndGame(Tree* tree, Node* node, char* user_ans) {
+    ASSERT(tree     != NULL, "NULL POINTER WAS PASSED!\n")
+    ASSERT(node     != NULL, "NULL POINTER WAS PASSED!\n")
+    ASSERT(user_ans != NULL, "NULL POINTER WAS PASSED!\n")
+
     while (scanf("%s", user_ans)) {
-            if (strcasecmp(user_ans, "yes") == 0) {
-                printf(GREEN("Oh yes, I won again!\n"));
+        if (strcasecmp(user_ans, "yes") == 0) {
+            printf(GREEN("Oh yes, I won again!\n"));
 
-                break;
-            } else if (strcasecmp(user_ans, "no") == 0) {
-                printf("Please, write the word that you have made up your mind\n");
+            break;
+        } else if (strcasecmp(user_ans, "no") == 0) {
+            printf("Please, write the word that you have made up your mind\n");
+            AkinatorAddUnknownWord(tree, node);
+            printf(GREEN("Thank you, the new word has been successfully added now I know %lu sports!\n"), tree->size);
 
-                char* new_word = (char*) calloc(1, MAX_DATA_SIZE * sizeof(char));
-                if (!new_word) {
-                    printf(RED("MEMORY ERROR!\n"));
-
-                    return MEMORY_ERROR;
-                }
-                scanf("%s", new_word);
-
-                printf("Please, write how %s differs from %s\n", new_word, node->data);
-
-                char* new_question = (char*) calloc(1, MAX_DATA_SIZE * sizeof(char));
-                if (!new_question) {
-                    printf(RED("MEMORY ERROR!\n"));
-
-                    return MEMORY_ERROR;
-                }
-                scanf("%s", new_question);
-
-                node->left  = CreateNode(node->data);
-                node->right = CreateNode(new_word);
-                node->data  = new_question;
-
-                break;
-            } else {
-                printf(RED("Please, answer only \"yes\" or \"no\")\n"));
-                sleep(1);
-                printf(YELLOW("%s? [yes/no]\n"), node->data);
-            }
+            break;
+        } else {
+            printf(RED("Please, answer only \"yes\" or \"no\")\n"));
+            sleep(1);
+            printf("Did I guess right?? [yes/no]\n");
         }
+    }
 
     return SUCCESS;
 }
@@ -234,27 +274,34 @@ void StartAkinatorGame(Tree* tree) {
     char start_game[50] = {};
 
     // TODO espeak voice || + time sleep
-    printf(CYAN("Hello, I'm an akinator and I can guess the sport (I know 666 sports) that you guessed!\n"));
+    printf(CYAN("Hello, I'm an akinator and I can guess the sport (I know %lu sports) that you guessed!\n"), tree->size);
     printf(CYAN("Do you want to start the game? [yes/no]\n"));
-    scanf("%49s", start_game);
 
-    if (strcasecmp(start_game, "yes") == 0) {
-        PlayGame(tree->root);
+    while (scanf("%49s", start_game)) {
+        if (strcasecmp(start_game, "yes") == 0) {
+            PlayGame(tree, tree->root);
 
-        while (1) {
-            sleep(2);
-            printf(MAGENTA("Do you want to play again? [yes/no]\n"));
-            scanf("%49s", start_game);
-            if (strcasecmp(start_game, "yes") == 0) {
-                PlayGame(tree->root);
-            } else {
-                printf(YELLOW("Okay, I'm waiting for our next game!\n"));
-
-                break;
+            while (1) {
+                sleep(2);
+                printf(MAGENTA("Do you want to play again? [yes/no]\n"));
+                scanf("%49s", start_game);
+                if (strcasecmp(start_game, "yes") == 0) {
+                    PlayGame(tree, tree->root);
+                } else if (strcasecmp(start_game, "no") == 0) {
+                    printf(YELLOW("Okay, I'm waiting for our next game!\n"));
+                    break;
+                } else {
+                    printf(RED("Please, answer only \"yes\" or \"no\")\n"));
+                }
             }
+            break;
+        } else if (strcasecmp(start_game, "no") == 0) {
+            printf(YELLOW("It's very sad, but I hope we'll play again!\n"));
+            break;
+        } else {
+            printf(RED("Please, answer only \"yes\" or \"no\")\n"));
+            printf(CYAN("Do you want to start the game? [yes/no]\n"));
         }
-    } else {
-        printf(YELLOW("It's very sad, but I hope we'll play again!\n"));
     }
 }
 
