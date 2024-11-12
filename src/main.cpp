@@ -14,8 +14,6 @@ const char* DATABASE = "/home/yan/projects/Akinator/WordBase/words.txt";
 // TODO Definition, difference, Similarities, Graph Dump
 
 int main() {
-    //system("convert /home/yan/projects/Akinator/DumpFiles/dump1943778939.png -resize 60% /home/yan/projects/Akinator/DumpFiles/dump1943778939.png");
-    //system("open /home/yan/projects/Akinator/DumpFiles/dump1943778939.png");
     srand((unsigned int)time(NULL));
 
     FILE* database = fopen(DATABASE, "r");

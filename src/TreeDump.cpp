@@ -6,8 +6,9 @@ const char* LOG_FILENAME            = "/home/yan/projects/Akinator/DumpFiles/log
 const char* DOT_FILENAME            = "/home/yan/projects/Akinator/DumpFiles/dump.dot";
 const int   COMMAND_BUFFER_CONSTANT = 500;
 
-FuncReturnCode TreeDump(Tree* tree, const char* func, int line, const char* title, ...) {
+FuncReturnCode TreeDump(Tree* tree, const char* func, int line, int* id, const char* title, ...) {
     ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n")
+    ASSERT(id   != NULL, "NULL POINTER WAS PASSED!\n")
 
     FILE* dot_file = fopen(DOT_FILENAME, "w");
     if (!dot_file) {
@@ -21,6 +22,7 @@ FuncReturnCode TreeDump(Tree* tree, const char* func, int line, const char* titl
     fprintf(dot_file, "\n}");
 
     int dump_id = rand();
+    *id = dump_id;
 
     char* command = (char*) calloc(COMMAND_BUFFER_CONSTANT, sizeof(char));
     if (command == NULL) {

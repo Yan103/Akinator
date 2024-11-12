@@ -47,7 +47,7 @@ int string_compare(const NodeData first_string, const NodeData secong_string) {
 FuncReturnCode TreeInsertNode(Tree* tree, Node* node, NodeData value, CompType comp_func) {
     ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n")
 
-    TREE_DUMP(tree, "Start: %s (%s)", __func__, value)
+    TREE_DUMP(tree, 0, "Start: %s (%s)", __func__, value)
 
     int comp_res = comp_func(value, node->data);
 
@@ -67,7 +67,7 @@ FuncReturnCode TreeInsertNode(Tree* tree, Node* node, NodeData value, CompType c
 
     tree->size += 1;
 
-    TREE_DUMP(tree, "End: %s (%s)", __func__, value)
+    TREE_DUMP(tree, 0, "End: %s (%s)", __func__, value)
 
     return SUCCESS;
 }
@@ -123,7 +123,7 @@ Node* ReadSubTree(FILE* filename) {
         return NULL; //abort() ?
     }
 
-    Node* node = CreateNode(ReadNodeData(filename)); // create node
+    Node* node  = CreateNode(ReadNodeData(filename)); // create node
 
     node->left  = ReadSubTree(filename);
     node->right = ReadSubTree(filename);

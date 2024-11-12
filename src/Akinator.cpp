@@ -26,10 +26,12 @@ FuncReturnCode StartAkinator(Tree* tree) {
         } else if (strcasecmp(user_choice, "c") == 0) {
             printf("in development...");                    //! dodelay
         } else if (strcasecmp(user_choice, "s") == 0) {
-            TREE_DUMP(tree, "%s", __func__)
-
-            //system("convert /home/yan/projects/Akinator/DumpFiles/dump1943778939.png -resize 60% /home/yan/projects/Akinator/DumpFiles/dump1943778939.png");
-            system("open /home/yan/projects/Akinator/DumpFiles/dump1943778939.png"); //! что делать с уникальным номером?
+            int dump_id = 0;
+            TREE_DUMP(tree, &dump_id, "%s", __func__)
+            char command[MAX_DATA_SIZE] = {};
+            
+            sprintf(command, "eog /home/yan/projects/Akinator/DumpFiles/dump%d.png -f", dump_id);
+            system(command);
 
             printf(YELLOW("What do you want:\n[G]uess, [D]efine, [C]ompare objects, [S]how the tree, [E]xit with or [w]ithout saving?\n"));
         } else if (strcasecmp(user_choice, "e") == 0) {
