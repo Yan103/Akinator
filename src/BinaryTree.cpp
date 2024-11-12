@@ -190,3 +190,38 @@ FuncReturnCode WriteSubTree(FILE* filename, Node* node) {
 
     return SUCCESS;
 }
+
+//! Fix small bug!!!!!!!
+int TreeFindElem(Node* node, NodeData value, NodeData* path, int* path1) {
+    ASSERT(value != NULL, "NULL POINTER WAS PASSED!\n")
+
+    if (node == NULL) {
+        return 0;
+    }
+
+    *path = node->data; path++;
+    if (strcasecmp(node->data, value) == 0) {
+        return 1;
+    }
+
+    *path1 = -1; path1++;
+    if (node->left) {
+        if (TreeFindElem(node->left, value, path, path1)) {
+
+            return 1;
+        }
+    }
+    path1--;
+
+    *path1 = 1;
+    path1++;
+    if (node->right) {
+        if (TreeFindElem(node->right, value, path, path1)) {
+            return 1;
+        }
+    }
+    path1--;
+
+    path--;
+    return 0;
+}

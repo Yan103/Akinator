@@ -28,7 +28,21 @@ int main() {
 
     fclose(database);
 
-    StartAkinator(tree);
+    //* tests
+    NodeData  path[100] = {};
+    int      path1[100] = {};
+    TreeFindElem(tree->root, "Baseball", path, path1);
+
+    for (int i = 0; i < 100; i++) {
+        if (strcasecmp(path[i], "Baseball") == 0) break;
+
+        if (path[i]) {
+            printf("%d %s\n", path1[i], path[i]);
+        }
+
+    } // TODO vse cherez odin massiv
+
+    //StartAkinator(tree);
 
     TreeDtor(tree);
 

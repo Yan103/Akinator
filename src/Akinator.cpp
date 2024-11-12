@@ -29,9 +29,9 @@ FuncReturnCode StartAkinator(Tree* tree) {
             int dump_id = 0;
             TREE_DUMP(tree, &dump_id, "%s", __func__)
             char command[MAX_DATA_SIZE] = {};
-            
+
             sprintf(command, "eog /home/yan/projects/Akinator/DumpFiles/dump%d.png -f", dump_id);
-            system(command);
+            system(command); //! how to fix warnings ?
 
             printf(YELLOW("What do you want:\n[G]uess, [D]efine, [C]ompare objects, [S]how the tree, [E]xit with or [w]ithout saving?\n"));
         } else if (strcasecmp(user_choice, "e") == 0) {
@@ -53,7 +53,7 @@ FuncReturnCode StartAkinator(Tree* tree) {
         } else {
             printf(RED("Please, use only the symbols available in the menu\n"));
             sleep(1);
-            printf(YELLOW("What do you want:\n[G]uess, [D]efine, [C]ompare objects, [S]how the tree, [E]xit with or [w]ithout saving?"));
+            printf(YELLOW("What do you want:\n[G]uess, [D]efine, [C]ompare objects, [S]how the tree, [E]xit with or [w]ithout saving?\n"));
         }
     }
 
