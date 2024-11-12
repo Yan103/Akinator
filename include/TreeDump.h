@@ -18,9 +18,9 @@
 #define NEWHTMLLINE(filename) fputc('\n', filename);
 
 #ifdef DEBUG
-    #define TREE_DUMP(tree, title, ...) { TreeDump(tree, __func__, __LINE__, title, __VA_ARGS__); }
+    #define TREE_DUMP(tree, id, title, ...) { TreeDump(tree, __func__, __LINE__, id, title, __VA_ARGS__); }
 #else
-    #define TREE_DUMP(tree, title, ...) {}
+    #define TREE_DUMP(tree, id, title, ...) {}
 #endif
 
 /*!
@@ -30,7 +30,7 @@
     \param  [in] line   - call function line
     \param  [in] title  - information about call function
 */
-FuncReturnCode TreeDump(Tree* tree, const char* func, int line, const char* title, ...) __attribute__ ((format(printf, 4, 5)));
+FuncReturnCode TreeDump(Tree* tree, const char* func, int line, int* id, const char* title, ...) __attribute__ ((format(printf, 5, 6)));
 
 /*!
     @brief Function that creates base for DUMP
