@@ -53,6 +53,6 @@ FuncReturnCode WriteSubTree(FILE* filename, Node* node);
 
 FuncReturnCode WriteTree(FILE* filename, Tree* tree);
 
-int TreeFindElem(Node* node, NodeData value, NodeData* path, int* path1);
+int TreeFindElem(Node* node, const char* value, NodeData* path, int* logic_path);
 
 #endif // BINARY_TREE_H

@@ -22,4 +22,6 @@ void StartAkinatorGuess(Tree* tree);
 
 FuncReturnCode StartAkinator(Tree* tree);
 
+int AkinatorGiveDefenition(Tree* tree, const char* find_data, char** path, int* logic_path);
+
 #endif // AKINATOR_H

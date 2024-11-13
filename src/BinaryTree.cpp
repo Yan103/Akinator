@@ -139,7 +139,7 @@ char* ReadNodeData(FILE* filename) {
     ASSERT(filename != NULL, "NULL POINTER WAS PASSED!\n")
 
     char symbol = 0;
-    while (isspace(symbol = fgetc(filename))){
+    while (isspace(symbol = (char)fgetc(filename))){
         ;
     }
 
@@ -157,7 +157,7 @@ char* ReadNodeData(FILE* filename) {
     }
 
     fscanf(filename, "%[^\"]", node_data);
-    symbol = fgetc(filename);
+    symbol = (char)fgetc(filename);
 
     return node_data;
 }
@@ -191,8 +191,7 @@ FuncReturnCode WriteSubTree(FILE* filename, Node* node) {
     return SUCCESS;
 }
 
-//! Fix small bug!!!!!!!
-int TreeFindElem(Node* node, NodeData value, NodeData* path, int* path1) {
+int TreeFindElem(Node* node, const char* value, NodeData* path, int* logic_path) {
     ASSERT(value != NULL, "NULL POINTER WAS PASSED!\n")
 
     if (node == NULL) {
@@ -204,23 +203,22 @@ int TreeFindElem(Node* node, NodeData value, NodeData* path, int* path1) {
         return 1;
     }
 
-    *path1 = -1; path1++;
+    *logic_path = -1; logic_path++;
     if (node->left) {
-        if (TreeFindElem(node->left, value, path, path1)) {
+        if (TreeFindElem(node->left, value, path, logic_path)) {
 
             return 1;
         }
     }
-    path1--;
+    logic_path--;
 
-    *path1 = 1;
-    path1++;
+    *logic_path = 1; logic_path++;
     if (node->right) {
-        if (TreeFindElem(node->right, value, path, path1)) {
+        if (TreeFindElem(node->right, value, path, logic_path)) {
             return 1;
         }
     }
-    path1--;
+    logic_path--;
 
     path--;
     return 0;

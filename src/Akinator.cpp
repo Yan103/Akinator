@@ -20,20 +20,55 @@ FuncReturnCode StartAkinator(Tree* tree) {
         if (strcasecmp(user_choice, "g") == 0) {
             StartAkinatorGuess(tree);
 
-            printf(YELLOW("What do you want:\n[G]uess, [D]efine, [C]ompare objects, [S]how the tree, [E]xit with or [w]ithout saving?\n"));
         } else if (strcasecmp(user_choice, "d") == 0) {
-            printf("in development...");                    //! dodelay
+            printf(CYAN("Determining which object you want to get?\n"));
+
+            char object[MAX_DATA_SIZE] = {};
+            scanf("%499s", object);
+
+            char**     path = (char**) calloc(1, tree->size * sizeof(char**));
+            int* logic_path = (int*) calloc(1, tree->size * sizeof(int*));
+
+            if (AkinatorGiveDefenition(tree, object, path, logic_path)) {
+                printf(RED("No element in tree\n"));
+            }
+
+            FREE(path)
+            FREE(logic_path)
+            sleep(1);
+
         } else if (strcasecmp(user_choice, "c") == 0) {
-            printf("in development...");                    //! dodelay
+            char  first_object[MAX_DATA_SIZE] = {};
+            char second_object[MAX_DATA_SIZE] = {};
+
+            scanf("%499s", first_object);
+            scanf("%499s", second_object);
+
+            // TODO function which print res of Defenition and Similar/Difference functions
+
+            char**     path1 = (char**) calloc(1, tree->size * sizeof(char**));
+            int* logic_path1 = (int*) calloc(1, tree->size * sizeof(int*));
+
+            int first_res = AkinatorGiveDefenition(tree, first_object, path1, logic_path1);
+
+            char**     path2 = (char**) calloc(1, tree->size * sizeof(char**));
+            int* logic_path2 = (int*) calloc(1, tree->size * sizeof(int*));
+
+            int second_res = AkinatorGiveDefenition(tree, second_object, path2, logic_path2);
+
+            if (first_res + second_res != 0) {
+                printf(RED("At least one object was not found in the tree\n"));
+            }
+
+            FREE(path1) FREE(path2)
+            FREE(logic_path1) FREE(logic_path2)
         } else if (strcasecmp(user_choice, "s") == 0) {
             int dump_id = 0;
             TREE_DUMP(tree, &dump_id, "%s", __func__)
             char command[MAX_DATA_SIZE] = {};
 
             sprintf(command, "eog /home/yan/projects/Akinator/DumpFiles/dump%d.png -f", dump_id);
-            system(command); //! how to fix warnings ?
-
-            printf(YELLOW("What do you want:\n[G]uess, [D]efine, [C]ompare objects, [S]how the tree, [E]xit with or [w]ithout saving?\n"));
+            system(command);
         } else if (strcasecmp(user_choice, "e") == 0) {
             printf(YELLOW("A save exit has been triggered. See you soon)\n"));
 
@@ -47,14 +82,14 @@ FuncReturnCode StartAkinator(Tree* tree) {
 
             break;
         } else if (strcasecmp(user_choice, "w") == 0) {
-            printf(YELLOW("A call without saving. I hope we will play another game soon)\n"));
+            printf(YELLOW("A call exit without saving. I hope we will play another game soon)\n"));
 
             break;
         } else {
             printf(RED("Please, use only the symbols available in the menu\n"));
             sleep(1);
-            printf(YELLOW("What do you want:\n[G]uess, [D]efine, [C]ompare objects, [S]how the tree, [E]xit with or [w]ithout saving?\n"));
         }
+        printf(YELLOW("What do you want:\n[G]uess, [D]efine, [C]ompare objects, [S]how the tree, [E]xit with or [w]ithout saving?\n"));
     }
 
     return SUCCESS;
@@ -200,5 +235,27 @@ void StartAkinatorGuess(Tree* tree) {
             printf(RED("Please, answer only \"yes\" or \"no\")\n"));
             printf(CYAN("Do you want to start the game? [yes/no]\n"));
         }
+    }
+}
+
+int AkinatorGiveDefenition(Tree* tree, const char* find_data, char** path, int* logic_path) {
+    if (TreeFindElem(tree->root, find_data, path, logic_path)) {
+        printf(YELLOW("%s: "), find_data);
+        for (size_t i = 0; i < tree->size - 1; i++) {
+
+            if (path[i]) {
+                if (logic_path[i] == 1) {
+                    printf("%s ", path[i]);
+                } else {
+                    printf(RED("NO "));
+                    printf("%s ", path[i]);
+                }
+                if (strcasecmp(path[i + 1], find_data) != 0) {printf("| ");}
+                else {printf("\n"); break;}
+            }
+        }
+        return 0;
+    } else {
+        return 1;
     }
 }
