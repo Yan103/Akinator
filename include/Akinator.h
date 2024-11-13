@@ -24,4 +24,13 @@ FuncReturnCode StartAkinator(Tree* tree);
 
 int AkinatorGiveDefenition(Tree* tree, const char* find_data, char** path, int* logic_path);
 
+FuncReturnCode AkinatorShowDifference(Tree* tree,
+                                      char*  first_obj, char**  first_path, int*  first_logic_path,
+                                      char* second_obj, char** second_path, int* second_logic_path);
+
+FuncReturnCode AkinatorShowSimilarity(Tree* tree,
+                                      char*  first_obj, char**  first_path, int*  first_logic_path,
+                                      char* second_obj, char** second_path, int* second_logic_path);
+
+
 #endif // AKINATOR_H
