@@ -26,8 +26,18 @@ FuncReturnCode StartAkinator(Tree* tree) {
             char object[MAX_DATA_SIZE] = {};
             scanf("%499s", object);
 
-            char**     path = (char**) calloc(1, tree->size * sizeof(char**));
+            char** path = (char**) calloc(1, tree->size * sizeof(char**));
+            if (!path) {
+                printf(RED("MEMORY ERROR!\n"));
+
+                return MEMORY_ERROR;
+            }
             int* logic_path = (int*) calloc(1, tree->size * sizeof(int*));
+            if (!logic_path) {
+                printf(RED("MEMORY ERROR!\n"));
+
+                return MEMORY_ERROR;
+            }
 
             if (AkinatorGiveDefenition(tree, object, path, logic_path)) {
                 printf(RED("No element in tree\n"));
@@ -46,13 +56,32 @@ FuncReturnCode StartAkinator(Tree* tree) {
             scanf("%499s", first_object);
             scanf("%499s", second_object);
 
-            char**     path1 = (char**) calloc(1, tree->size * sizeof(char**));
-            int* logic_path1 = (int*) calloc(1, tree->size * sizeof(int*));
+            char** path1 = (char**) calloc(1, tree->size * sizeof(char**));
+            if (!path1) {
+                printf(RED("MEMORY ERROR!\n"));
 
+                return MEMORY_ERROR;
+            }
+            int* logic_path1 = (int*) calloc(1, tree->size * sizeof(int*));
+            if (!logic_path1) {
+                printf(RED("MEMORY ERROR!\n"));
+
+                return MEMORY_ERROR;
+            }
             int first_res = TreeFindElem(tree->root, first_object, path1, logic_path1);
 
-            char**     path2 = (char**) calloc(1, tree->size * sizeof(char**));
+            char** path2 = (char**) calloc(1, tree->size * sizeof(char**));
+            if (!path2) {
+                printf(RED("MEMORY ERROR!\n"));
+
+                return MEMORY_ERROR;
+            }
             int* logic_path2 = (int*) calloc(1, tree->size * sizeof(int*));
+            if (!logic_path2) {
+                printf(RED("MEMORY ERROR!\n"));
+
+                return MEMORY_ERROR;
+            }
 
             int second_res = TreeFindElem(tree->root, second_object, path2, logic_path2);
 
