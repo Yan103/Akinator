@@ -17,6 +17,7 @@ FuncReturnCode StartAkinator(Tree* tree) {
     char user_choice[MAX_USER_ANS] = {};
 
     while (scanf("%s", user_choice)) {
+        // todo switch
         if (strcasecmp(user_choice, "g") == 0) {
             StartAkinatorGuess(tree);
 
@@ -24,47 +25,51 @@ FuncReturnCode StartAkinator(Tree* tree) {
             printf(CYAN("Determining which object you want to get?\n"));
 
             char object[MAX_DATA_SIZE] = {};
-            scanf("%499s", object);
+            fgetc(stdin);
+            scanf("%[^\n]", object); // todo fix
 
             char** path = (char**) calloc(1, tree->size * sizeof(char**));
             if (!path) {
-                printf(RED("MEMORY ERROR!\n"));
+                fprintf(stderr, RED("MEMORY ERROR!\n"));
 
                 return MEMORY_ERROR;
             }
             int* logic_path = (int*) calloc(1, tree->size * sizeof(int*));
             if (!logic_path) {
-                printf(RED("MEMORY ERROR!\n"));
+                fprintf(stderr, RED("MEMORY ERROR!\n"));
 
                 return MEMORY_ERROR;
             }
 
             if (AkinatorGiveDefenition(tree, object, path, logic_path)) {
-                printf(RED("No element in tree\n"));
+                fprintf(stderr, RED("No element in tree\n"));
             }
 
             FREE(path)
             FREE(logic_path)
             sleep(1);
-
+        // todo fix copypastaaaaa
         } else if (strcasecmp(user_choice, "c") == 0) {
             char  first_object[MAX_DATA_SIZE] = {};
             char second_object[MAX_DATA_SIZE] = {};
 
             printf(CYAN("Enter the 2 objects you want to compare:\n"));
 
-            scanf("%499s", first_object);
-            scanf("%499s", second_object);
+            fgetc(stdin);
+            scanf("%[^\n]", first_object);
+            fgetc(stdin);
+            scanf("%[^\n]", second_object);
 
             char** path1 = (char**) calloc(1, tree->size * sizeof(char**));
             if (!path1) {
-                printf(RED("MEMORY ERROR!\n"));
+                fprintf(stderr, RED("MEMORY ERROR!\n"));
 
                 return MEMORY_ERROR;
             }
+            // todo calloc (tree->size, sizeof())
             int* logic_path1 = (int*) calloc(1, tree->size * sizeof(int*));
             if (!logic_path1) {
-                printf(RED("MEMORY ERROR!\n"));
+                fprintf(stderr, RED("MEMORY ERROR!\n"));
 
                 return MEMORY_ERROR;
             }
@@ -72,13 +77,13 @@ FuncReturnCode StartAkinator(Tree* tree) {
 
             char** path2 = (char**) calloc(1, tree->size * sizeof(char**));
             if (!path2) {
-                printf(RED("MEMORY ERROR!\n"));
+                fprintf(stderr, RED("MEMORY ERROR!\n"));
 
                 return MEMORY_ERROR;
             }
             int* logic_path2 = (int*) calloc(1, tree->size * sizeof(int*));
             if (!logic_path2) {
-                printf(RED("MEMORY ERROR!\n"));
+                fprintf(stderr, RED("MEMORY ERROR!\n"));
 
                 return MEMORY_ERROR;
             }
@@ -91,10 +96,10 @@ FuncReturnCode StartAkinator(Tree* tree) {
                 if (strcasecmp(first_object, second_object) == 0) {
                     printf(CYAN("The objects are the same\n"));
                 } else {
-                    printf(CYAN("Object %s differs from object %s in that:\n"), first_object, second_object);
+                    printf(CYAN("Object \"%s\" differs from object \"%s\" in that:\n"), first_object, second_object);
                     AkinatorShowDifference(tree, first_object, path1, logic_path1, second_object, path2, logic_path2);
 
-                    printf(CYAN("Object %s is similar to object %s in that:\n"), first_object, second_object);
+                    printf(CYAN("Object \"%s\" is similar to object \"%s\" in that:\n"), first_object, second_object);
                     AkinatorShowSimilarity(tree, first_object, path1, logic_path1, second_object, path2, logic_path2);
                 }
             }
@@ -103,9 +108,9 @@ FuncReturnCode StartAkinator(Tree* tree) {
             FREE(logic_path1) FREE(logic_path2)
         } else if (strcasecmp(user_choice, "s") == 0) {
             int dump_id = 0;
-            TREE_DUMP(tree, &dump_id, "%s", __func__)
+            TreeDump(tree, __func__, __LINE__, &dump_id, "%s", __func__);
             char command[MAX_DATA_SIZE] = {};
-
+            // todo think about it
             sprintf(command, "eog /home/yan/projects/Akinator/DumpFiles/dump%d.png -f", dump_id);
             system(command);
         } else if (strcasecmp(user_choice, "e") == 0) {
@@ -113,7 +118,7 @@ FuncReturnCode StartAkinator(Tree* tree) {
 
             FILE* savefile = fopen(SAVEFILE, "w");
             if (!savefile) {
-                printf(RED("FILE ERROR!\n"));
+                fprintf(stderr, RED("FILE ERROR!\n"));
 
                 return FILE_ERROR;
             }
@@ -128,7 +133,8 @@ FuncReturnCode StartAkinator(Tree* tree) {
             printf(RED("Please, use only the symbols available in the menu\n"));
             sleep(1);
         }
-        printf(YELLOW("What do you want:\n[G]uess, [D]efine, [C]ompare objects, [S]how the tree, [E]xit with or [w]ithout saving?\n"));
+        printf(YELLOW("What do you want:\n"
+                      "[G]uess, [D]efine, [C]ompare objects, [S]how the tree, [E]xit with or [w]ithout saving?\n"));
     }
 
     return SUCCESS;
@@ -151,6 +157,7 @@ FuncReturnCode PlayGame(Tree* tree, Node* node) {
     printf("I think, it is... "),
     printf(GREEN("%s\n"), node->data);  //* test espeak system
 
+    // todo если захочешь todo todo
     printf("Did I guess right? [yes/no]\n");
 
     AkinatorEndGame(tree, node, user_ans);
@@ -164,21 +171,23 @@ FuncReturnCode AkinatorAddUnknownWord(Tree* tree, Node* node) {
 
     char* new_word = (char*) calloc(1, MAX_DATA_SIZE * sizeof(char));
     if (!new_word) {
-        printf(RED("MEMORY ERROR!\n"));
+        fprintf(stderr, RED("MEMORY ERROR!\n"));
 
         return MEMORY_ERROR;
     }
-    scanf("%s", new_word);
+    fgetc(stdin);
+    scanf("%[^\n]", new_word); //!
 
     printf("Please, write how %s differs from %s\n", new_word, node->data);
 
     char* new_question = (char*) calloc(1, MAX_DATA_SIZE * sizeof(char));
     if (!new_question) {
-        printf(RED("MEMORY ERROR!\n"));
+        fprintf(stderr, RED("MEMORY ERROR!\n"));
 
         return MEMORY_ERROR;
     }
-    scanf("%s", new_question);
+    fgetc(stdin);
+    scanf("%[^\n]", new_question); //!
 
     node->left  = CreateNode(node->data);
     node->right = CreateNode(new_word);
@@ -243,7 +252,7 @@ FuncReturnCode AkinatorEndGame(Tree* tree, Node* node, char* user_ans) {
 
 void StartAkinatorGuess(Tree* tree) {
     ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n")
-    char start_game[50] = {};
+    char start_game[50] = {}; //! TODO ! magic const
 
     // TODO espeak voice || + time sleep
     printf(CYAN("Hello, I'm an akinator and I can guess the sport (I know %lu sports) that you guessed!\n"), tree->size);
@@ -290,8 +299,7 @@ int AkinatorGiveDefenition(Tree* tree, const char* find_data, char** path, int* 
                 if (logic_path[i] == 1) {
                     printf("%s ", path[i]);
                 } else {
-                    printf(RED("NO "));
-                    printf("%s ", path[i]);
+                    printf(RED("NO ") "%s ", path[i]);
                 }
                 if (strcasecmp(path[i + 1], find_data) != 0) {printf("| ");}
                 else {printf("\n"); break;}
@@ -319,7 +327,7 @@ FuncReturnCode AkinatorShowDifference(Tree* tree,
             printf(YELLOW("%s: "), first_obj);
             if (first_logic_path[i] == -1) printf(RED("NO "));
             printf("%s\n", first_path[i]);
-
+            // todo copypasta
             printf(YELLOW("%s: "), second_obj);
             if (second_logic_path[i] == -1) printf(RED("NO "));
             printf("%s\n", second_path[i]);

@@ -12,13 +12,13 @@ Tree* TreeCtor(Node* root) {
 
     Tree* tree = (Tree*) calloc(1, sizeof(Tree));
     if (!tree) {
-        printf(RED("MEMORY ERROR!\n"));
+        fprintf(stderr, RED("MEMORY ERROR!\n"));
 
         return NULL;
     }
 
     tree->root = root;
-    tree->size = 0;
+    tree->size = (TreeNodesCount() - 1) / 2;
 
     return tree;
 }
@@ -27,7 +27,7 @@ Tree* TreeCtor(Node* root) {
 Node* CreateNode(NodeData value) {
     Node* node = (Node*) calloc(1, sizeof(Node));
     if (!node) {
-        printf(RED("MEMORY ERROR!\n"));
+        fprintf(stderr, RED("MEMORY ERROR!\n"));
 
         return NULL;
     }
@@ -43,7 +43,7 @@ int string_compare(const NodeData first_string, const NodeData secong_string) {
 
     return strcasecmp(first_string, secong_string);
 }
-
+// todo assert
 FuncReturnCode TreeInsertNode(Tree* tree, Node* node, NodeData value, CompType comp_func) {
     ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n")
 
@@ -71,7 +71,7 @@ FuncReturnCode TreeInsertNode(Tree* tree, Node* node, NodeData value, CompType c
 
     return SUCCESS;
 }
-
+// todo check if null
 FuncReturnCode NodeDtor(Node* node) {
     FREE(node->data)
     if (node->left) {
@@ -109,6 +109,7 @@ Node* ReadSubTree(FILE* filename) {
     int symbol = 0;
 
     //* Skip spaces
+    // todo to function
     while (isspace(symbol = fgetc(filename))) {
         ;
     }
@@ -118,16 +119,18 @@ Node* ReadSubTree(FILE* filename) {
 
         return NULL;
     } else if (symbol != '{') {
-        printf(RED("%s: unknown action symbol %c\n"), __func__, symbol);
+        fprintf(stderr, RED("%s: unknown action symbol %c\n"), __func__, symbol);
 
         return NULL; //abort() ?
     }
 
     Node* node  = CreateNode(ReadNodeData(filename)); // create node
-
+    //int child_count = 0;
+    // todo return n children resursively
     node->left  = ReadSubTree(filename);
     node->right = ReadSubTree(filename);
 
+    // todo to func
     while ((symbol = fgetc(filename)) != '}'){
         ;
     }
@@ -138,20 +141,21 @@ Node* ReadSubTree(FILE* filename) {
 char* ReadNodeData(FILE* filename) {
     ASSERT(filename != NULL, "NULL POINTER WAS PASSED!\n")
 
+    // todo to func
     char symbol = 0;
     while (isspace(symbol = (char)fgetc(filename))){
         ;
     }
 
     if (symbol != '"') {
-        printf(RED("ERROR WITH READ TREE FROM FILE1\n"));
+        fprintf(stderr, RED("ERROR WITH READ TREE FROM FILE1\n"));
 
         // abort() ?
     }
 
     char* node_data = (char*) calloc(1, MAX_DATA_SIZE * sizeof(char));
     if (!node_data) {
-        printf(RED("MEMORY ERROR!\n"));
+        fprintf(stderr, RED("MEMORY ERROR!\n"));
 
         // abort() ?
     }
