@@ -8,7 +8,7 @@
 #include "TreeDump.h"
 
 Tree* TreeCtor(Node* root) {
-    ASSERT(root != NULL, "NULL POINTER WAS PASSED!\n")
+    ASSERT(root != NULL, "NULL POINTER WAS PASSED!\n");
 
     Tree* tree = (Tree*) calloc(1, sizeof(Tree));
     if (!tree) {
@@ -38,16 +38,17 @@ Node* CreateNode(NodeData value) {
 }
 
 int string_compare(const NodeData first_string, const NodeData secong_string) {
-    ASSERT(first_string != NULL, "NULL PONTER WAS PASSED!\n")
-    ASSERT(secong_string != NULL, "NULL PONTER WAS PASSED!\n")
+    ASSERT(first_string != NULL, "NULL PONTER WAS PASSED!\n");
+    ASSERT(secong_string != NULL, "NULL PONTER WAS PASSED!\n");
 
     return strcasecmp(first_string, secong_string);
 }
-// todo assert
-FuncReturnCode TreeInsertNode(Tree* tree, Node* node, NodeData value, CompType comp_func) {
-    ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n")
 
-    TREE_DUMP(tree, 0, "Start: %s (%s)", __func__, value)
+FuncReturnCode TreeInsertNode(Tree* tree, Node* node, NodeData value, CompType comp_func) {
+    ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n");
+    ASSERT(node != NULL, "NULL POINTER WAS PASSED!\n");
+
+    TREE_DUMP(tree, 0, "Start: %s (%s)", __func__, value);
 
     int comp_res = comp_func(value, node->data);
 
@@ -67,13 +68,15 @@ FuncReturnCode TreeInsertNode(Tree* tree, Node* node, NodeData value, CompType c
 
     tree->size += 1;
 
-    TREE_DUMP(tree, 0, "End: %s (%s)", __func__, value)
+    TREE_DUMP(tree, 0, "End: %s (%s)", __func__, value);
 
     return SUCCESS;
 }
-// todo check if null
+
 FuncReturnCode NodeDtor(Node* node) {
-    FREE(node->data)
+    ASSERT(node != NULL, "NULL POINTER WAS PASSED!\n");
+
+    FREE(node->data);
     if (node->left) {
         NodeDtor(node->left);
     }
@@ -82,16 +85,16 @@ FuncReturnCode NodeDtor(Node* node) {
         NodeDtor(node->right);
     }
 
-    FREE(node)
+    FREE(node);
 
     return SUCCESS;
 }
 
 FuncReturnCode TreeDtor(Tree* tree) {
-    ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n")
+    ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n");
 
     NodeDtor(tree->root);
-    FREE(tree)
+    FREE(tree);
 
     return SUCCESS;
 }
@@ -103,16 +106,32 @@ size_t TreeNodesCount() {
     return num;
 }
 
-Node* ReadSubTree(FILE* filename) {
-    ASSERT(filename != NULL, "NULL POINTER WAS PASSED!\n")
+static int SkipSpacesInFile(FILE* filename, int symbol) {
+    ASSERT(filename != NULL, "NULL POINTER WAS PASSED!\n");
 
-    int symbol = 0;
-
-    //* Skip spaces
-    // todo to function
     while (isspace(symbol = fgetc(filename))) {
         ;
     }
+
+    return symbol;
+}
+
+static int SkipUntilFindSymbol(FILE* filename, int symbol, char find_symbol) {
+    ASSERT(filename != NULL, "NULL POINTER WAS PASSED!\n");
+
+    while ((symbol = fgetc(filename)) != find_symbol){
+        ;
+    }
+
+    return symbol;
+}
+
+Node* ReadSubTree(FILE* filename) {
+    ASSERT(filename != NULL, "NULL POINTER WAS PASSED!\n");
+
+    int symbol = 0;
+
+    symbol = SkipSpacesInFile(filename, symbol);
 
     if (symbol == '*') {
         TreeNodesCount();
@@ -130,22 +149,16 @@ Node* ReadSubTree(FILE* filename) {
     node->left  = ReadSubTree(filename);
     node->right = ReadSubTree(filename);
 
-    // todo to func
-    while ((symbol = fgetc(filename)) != '}'){
-        ;
-    }
+    symbol = SkipUntilFindSymbol(filename, symbol, '}');
 
     return node;
 }
 
 char* ReadNodeData(FILE* filename) {
-    ASSERT(filename != NULL, "NULL POINTER WAS PASSED!\n")
+    ASSERT(filename != NULL, "NULL POINTER WAS PASSED!\n");
 
-    // todo to func
     char symbol = 0;
-    while (isspace(symbol = (char)fgetc(filename))){
-        ;
-    }
+    symbol = (char) SkipSpacesInFile(filename, int(symbol));
 
     if (symbol != '"') {
         fprintf(stderr, RED("ERROR WITH READ TREE FROM FILE1\n"));
@@ -167,8 +180,8 @@ char* ReadNodeData(FILE* filename) {
 }
 
 FuncReturnCode WriteTree(FILE* filename, Tree* tree) {
-    ASSERT(filename != NULL, "NULL POINTER WAS PASSED!\n")
-    ASSERT(tree     != NULL, "NULL POINTER WAS PASSED!\n")
+    ASSERT(filename != NULL, "NULL POINTER WAS PASSED!\n");
+    ASSERT(tree     != NULL, "NULL POINTER WAS PASSED!\n");
 
     WriteSubTree(filename, tree->root);
 
@@ -176,7 +189,7 @@ FuncReturnCode WriteTree(FILE* filename, Tree* tree) {
 }
 
 FuncReturnCode WriteSubTree(FILE* filename, Node* node) {
-    ASSERT(filename != NULL, "NULL POINTER WAS PASSED!\n")
+    ASSERT(filename != NULL, "NULL POINTER WAS PASSED!\n");
 
     if (node == NULL) {
         fprintf(filename, "* ");
@@ -196,7 +209,7 @@ FuncReturnCode WriteSubTree(FILE* filename, Node* node) {
 }
 
 int TreeFindElem(Node* node, const char* value, NodeData* path, int* logic_path) {
-    ASSERT(value != NULL, "NULL POINTER WAS PASSED!\n")
+    ASSERT(value != NULL, "NULL POINTER WAS PASSED!\n");
 
     if (node == NULL) {
         return 0;
