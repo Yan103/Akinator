@@ -67,60 +67,8 @@ FuncReturnCode StartAkinator(Tree* tree) {
             StartAkinatorDefinition(tree);
 
         } else if (strcasecmp(user_choice, "c") == 0) {
-            char  first_object[MAX_DATA_SIZE] = {};
-            char second_object[MAX_DATA_SIZE] = {};
+            StartAkinatorCompare(tree);
 
-            printf(CYAN("Enter the 2 objects you want to compare:\n"));
-
-            READ(first_object);
-            READ(second_object);
-
-            char** path1 = (char**) calloc(tree->size, sizeof(char**));
-            if (!path1) {
-                fprintf(stderr, RED("MEMORY ERROR!\n"));
-
-                return MEMORY_ERROR;
-            }
-
-            int* logic_path1 = (int*) calloc(tree->size, sizeof(int*));
-            if (!logic_path1) {
-                fprintf(stderr, RED("MEMORY ERROR!\n"));
-
-                return MEMORY_ERROR;
-            }
-            int first_res = TreeFindElem(tree->root, first_object, path1, logic_path1);
-
-            char** path2 = (char**) calloc(tree->size, sizeof(char**));
-            if (!path2) {
-                fprintf(stderr, RED("MEMORY ERROR!\n"));
-
-                return MEMORY_ERROR;
-            }
-            int* logic_path2 = (int*) calloc(tree->size, sizeof(int*));
-            if (!logic_path2) {
-                fprintf(stderr, RED("MEMORY ERROR!\n"));
-
-                return MEMORY_ERROR;
-            }
-
-            int second_res = TreeFindElem(tree->root, second_object, path2, logic_path2);
-
-            if (first_res + second_res != 2) {
-                printf(RED("At least one object was not found in the tree\n"));
-            } else {
-                if (strcasecmp(first_object, second_object) == 0) {
-                    printf(CYAN("The objects are the same\n"));
-                } else {
-                    printf(CYAN("Object \"%s\" differs from object \"%s\" in that:\n"), first_object, second_object);
-                    AkinatorShowDifference(tree, first_object, path1, logic_path1, second_object, path2, logic_path2);
-
-                    printf(CYAN("Object \"%s\" is similar to object \"%s\" in that:\n"), first_object, second_object);
-                    AkinatorShowSimilarity(tree, first_object, path1, logic_path1, second_object, path2, logic_path2);
-                }
-            }
-
-            FREE(path1) FREE(path2)
-            FREE(logic_path1) FREE(logic_path2)
         } else if (strcasecmp(user_choice, "s") == 0) {
             AkinatorShowTree(tree);
 
@@ -160,7 +108,6 @@ FuncReturnCode PlayGame(Tree* tree, Node* node) {
     printf("I think, it is... "),
     printf(GREEN("%s\n"), node->data);  //* test espeak system
 
-    // todo если захочешь todo todo // не захотел :/
     printf("Did I guess right? [yes/no]\n");
 
     AkinatorEndGame(tree, node, user_ans);
@@ -341,21 +288,17 @@ static void ShowDifference(char* object, int no_label, char* difference) {
     printf("%s\n", difference);
 }
 
-FuncReturnCode AkinatorShowDifference(Tree* tree,
-                                      char*  first_obj, char**  first_path, int*  first_logic_path,
-                                      char* second_obj, char** second_path, int* second_logic_path) {
-    ASSERT(tree              != NULL, "NULL POINTER WAS PASSED!\n")
-    ASSERT(first_obj         != NULL, "NULL POINTER WAS PASSED!\n")
-    ASSERT(first_path        != NULL, "NULL POINTER WAS PASSED!\n")
-    ASSERT(first_logic_path  != NULL, "NULL POINTER WAS PASSED!\n")
-    ASSERT(second_obj        != NULL, "NULL POINTER WAS PASSED!\n")
-    ASSERT(second_path       != NULL, "NULL POINTER WAS PASSED!\n")
-    ASSERT(second_logic_path != NULL, "NULL POINTER WAS PASSED!\n")
+FuncReturnCode AkinatorShowDifference(Tree* tree, NodePath* obj1_path, NodePath* obj2_path) {
+    ASSERT(tree      != NULL, "NULL POINTER WAS PASSED!\n");
+    ASSERT(obj1_path != NULL, "NULL POINTER WAS PASSED!\n");
+    ASSERT(obj2_path != NULL, "NULL POINTER WAS PASSED!\n");
 
     for (size_t i = 0; i < tree->size - 1; i++) {
-        if (strcasecmp(first_path[i], second_path[i]) != 0 || (first_logic_path[i] != second_logic_path[i])) {
-            ShowDifference( first_obj,  first_logic_path[i],  first_path[i]);
-            ShowDifference(second_obj, second_logic_path[i], second_path[i]);
+        if (strcasecmp(obj1_path->path[i], obj2_path->path[i]) != 0
+            || (obj1_path->logic_path[i] != obj2_path->logic_path[i])) {
+
+            ShowDifference(obj1_path->data, obj1_path->logic_path[i], obj1_path->path[i]);
+            ShowDifference(obj2_path->data, obj2_path->logic_path[i], obj2_path->path[i]);
 
             break;
         }
@@ -364,27 +307,22 @@ FuncReturnCode AkinatorShowDifference(Tree* tree,
     return SUCCESS;
 }
 
-FuncReturnCode AkinatorShowSimilarity(Tree* tree,
-                                      char*  first_obj, char**  first_path, int*  first_logic_path,
-                                      char* second_obj, char** second_path, int* second_logic_path) {
-    ASSERT(tree              != NULL, "NULL POINTER WAS PASSED!\n")
-    ASSERT(first_obj         != NULL, "NULL POINTER WAS PASSED!\n")
-    ASSERT(first_path        != NULL, "NULL POINTER WAS PASSED!\n")
-    ASSERT(first_logic_path  != NULL, "NULL POINTER WAS PASSED!\n")
-    ASSERT(second_obj        != NULL, "NULL POINTER WAS PASSED!\n")
-    ASSERT(second_path       != NULL, "NULL POINTER WAS PASSED!\n")
-    ASSERT(second_logic_path != NULL, "NULL POINTER WAS PASSED!\n")
+FuncReturnCode AkinatorShowSimilarity(Tree* tree, NodePath* obj1_path, NodePath* obj2_path) {
+    ASSERT(tree      != NULL, "NULL POINTER WAS PASSED!\n");
+    ASSERT(obj1_path != NULL, "NULL POINTER WAS PASSED!\n");
+    ASSERT(obj2_path != NULL, "NULL POINTER WAS PASSED!\n");
 
-    if (first_logic_path[0] != second_logic_path[0]) {
+    if (obj1_path->logic_path[0] != obj2_path->logic_path[0]) {
         printf(CYAN("The objects don't have anything similar\n"));
 
         return SUCCESS;
     }
 
     for (size_t i = 0; i < tree->size - 1; i++) {
-        if (strcasecmp(first_path[i], second_path[i]) == 0 && (first_logic_path[i] == second_logic_path[i])) {
-            if (first_logic_path[i] == -1) printf(RED("NO "));
-            printf("%s\n", first_path[i]);
+        if (strcasecmp(obj1_path->path[i], obj2_path->path[i]) == 0
+            && (obj1_path->logic_path[i] == obj2_path->logic_path[i])) {
+            if (obj1_path->logic_path[i] == -1) printf(RED("NO "));
+            printf("%s\n", obj1_path->path[i]);
         } else {
             break;
         }
@@ -457,4 +395,47 @@ FuncReturnCode AkinatorShowTree(Tree* tree) {
     }
 
     return SUCCESS;
+}
+
+static void ShowCompareResult(Tree* tree, int first_res, int second_res, NodePath* obj1_path, NodePath* obj2_path) {
+    ASSERT(tree      != NULL, "NULL POINTER WAS PASSED!\n");
+    ASSERT(obj1_path != NULL, "NULL POINTER WAS PASSED!\n");
+    ASSERT(obj2_path != NULL, "NULL POINTER WAS PASSED!\n");
+
+    if (first_res + second_res != 2) {
+        printf(RED("At least one object was not found in the tree\n"));
+    } else {
+        if (strcasecmp(obj1_path->data, obj2_path->data) == 0) {
+            printf(CYAN("The objects are the same\n"));
+        } else {
+            printf(CYAN("Object \"%s\" differs from object \"%s\" in that:\n"), obj1_path->data, obj2_path->data);
+            AkinatorShowDifference(tree, obj1_path, obj2_path);
+
+            printf(CYAN("Object \"%s\" is similar to object \"%s\" in that:\n"), obj1_path->data, obj2_path->data);
+            AkinatorShowSimilarity(tree, obj1_path, obj2_path);
+        }
+    }
+}
+
+void StartAkinatorCompare(Tree* tree) {
+    ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n");
+
+    char  first_object[MAX_DATA_SIZE] = {};
+    char second_object[MAX_DATA_SIZE] = {};
+
+    printf(CYAN("Enter the 2 objects you want to compare:\n"));
+
+    READ(first_object);
+    READ(second_object);
+
+    NodePath* obj1_path = NodePathInit(first_object, tree->size);
+    int first_res = TreeFindElem(tree->root, obj1_path->data, obj1_path->path, obj1_path->logic_path);
+
+    NodePath* obj2_path = NodePathInit(second_object, tree->size);
+    int second_res = TreeFindElem(tree->root, obj2_path->data, obj2_path->path, obj2_path->logic_path);
+
+    ShowCompareResult(tree, first_res, second_res, obj1_path, obj2_path);
+
+    NodePathClean(obj1_path);
+    NodePathClean(obj2_path);
 }

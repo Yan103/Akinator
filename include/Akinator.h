@@ -19,8 +19,10 @@ FuncReturnCode AkinatorEndGame(Tree* tree, Node* node, char* user_ans);
 FuncReturnCode PlayGame(Tree* tree, Node* node);
 
 void StartAkinatorGuess(Tree* tree);
-
+;
 void StartAkinatorDefinition(Tree* tree);
+
+void StartAkinatorCompare(Tree* tree);
 
 FuncReturnCode StartAkinatorSaveExit(Tree* tree);
 
@@ -30,13 +32,9 @@ FuncReturnCode AkinatorShowTree(Tree* tree);
 
 int AkinatorGiveDefenition(Tree* tree, NodePath* node_path);
 
-FuncReturnCode AkinatorShowDifference(Tree* tree,
-                                      char*  first_obj, char**  first_path, int*  first_logic_path,
-                                      char* second_obj, char** second_path, int* second_logic_path);
+FuncReturnCode AkinatorShowDifference(Tree* tree, NodePath* obj1_path, NodePath* obj2_path);
 
-FuncReturnCode AkinatorShowSimilarity(Tree* tree,
-                                      char*  first_obj, char**  first_path, int*  first_logic_path,
-                                      char* second_obj, char** second_path, int* second_logic_path);
+FuncReturnCode AkinatorShowSimilarity(Tree* tree, NodePath* obj1_path, NodePath* obj2_path);
 
 const char* ReadCommandArgs(const int argc, char* const *argv);
 
