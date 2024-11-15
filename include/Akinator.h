@@ -28,7 +28,7 @@ FuncReturnCode StartAkinatorSaveExit(Tree* tree);
 
 FuncReturnCode StartAkinator(Tree* tree);
 
-FuncReturnCode AkinatorShowTree(Tree* tree);
+FuncReturnCode StartAkinatorShowTree(Tree* tree);
 
 int AkinatorGiveDefenition(Tree* tree, NodePath* node_path);
 

@@ -70,7 +70,7 @@ FuncReturnCode StartAkinator(Tree* tree) {
             StartAkinatorCompare(tree);
 
         } else if (strcasecmp(user_choice, "s") == 0) {
-            AkinatorShowTree(tree);
+            StartAkinatorShowTree(tree);
 
         } else if (strcasecmp(user_choice, "e") == 0) {
             StartAkinatorSaveExit(tree);
@@ -380,7 +380,7 @@ FuncReturnCode StartAkinatorSaveExit(Tree* tree) {
     return SUCCESS;
 }
 
-FuncReturnCode AkinatorShowTree(Tree* tree) {
+FuncReturnCode StartAkinatorShowTree(Tree* tree) {
     ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n");
 
     char command[MAX_DATA_SIZE] = {};
