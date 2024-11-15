@@ -30,7 +30,7 @@
     \param  [in] line   - call function line
     \param  [in] title  - information about call function
 */
-FuncReturnCode TreeDump(Tree* tree, const char* func, int line, int* id, const char* title, ...) __attribute__ ((format(printf, 5, 6)));
+int TreeDump(Tree* tree, const char* func, int line, int* id, const char* title, ...) __attribute__ ((format(printf, 5, 6)));
 
 /*!
     @brief Function that creates base for DUMP

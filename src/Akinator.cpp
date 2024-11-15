@@ -6,8 +6,9 @@
 #include "TreeDump.h"
 #include "FuncReturnCode.h"
 
-const char* SAVEFILE = "/home/yan/projects/Akinator/WordBase/savedtree.txt";
-const char* DATABASE = "/home/yan/projects/Akinator/WordBase/words.txt";
+const char* SAVEFILE        = "/home/yan/projects/Akinator/WordBase/savedtree.txt";
+const char* DATABASE        = "/home/yan/projects/Akinator/WordBase/words.txt";
+const char* SHOW_TREE_CONST = "eog /home/yan/projects/Akinator/DumpFiles/dump";
 
 #define READ(buffer) { fgetc(stdin); scanf("%[^\n]", buffer); }
 
@@ -50,7 +51,7 @@ static void NodePathClean(NodePath* node_path) {
 }
 
 FuncReturnCode StartAkinator(Tree* tree) {
-    ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n")
+    ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n");
 
     printf(CYAN("Hi, I am an Akinator and I can guess the words that you have made up\n"));
     printf(YELLOW("What do you want:\n"
@@ -59,25 +60,12 @@ FuncReturnCode StartAkinator(Tree* tree) {
     char user_choice[MAX_USER_ANS] = {};
 
     while (scanf("%s", user_choice)) {
-        // todo switch?
         if (strcasecmp(user_choice, "g") == 0) {
             StartAkinatorGuess(tree);
 
         } else if (strcasecmp(user_choice, "d") == 0) {
-            printf(CYAN("Determining which object you want to get?\n"));
+            StartAkinatorDefinition(tree);
 
-            char object[MAX_DATA_SIZE] = {};
-            READ(object);
-
-            NodePath* obj_path = NodePathInit(object, tree->size);
-
-            if (AkinatorGiveDefenition(tree, obj_path)) {
-                fprintf(stderr, RED("No element in tree\n"));
-            }
-
-            NodePathClean(obj_path);
-            sleep(1);
-        // todo fix copypastaaaaa
         } else if (strcasecmp(user_choice, "c") == 0) {
             char  first_object[MAX_DATA_SIZE] = {};
             char second_object[MAX_DATA_SIZE] = {};
@@ -134,24 +122,10 @@ FuncReturnCode StartAkinator(Tree* tree) {
             FREE(path1) FREE(path2)
             FREE(logic_path1) FREE(logic_path2)
         } else if (strcasecmp(user_choice, "s") == 0) {
-            int dump_id = 0;
-            TreeDump(tree, __func__, __LINE__, &dump_id, "%s", __func__);
-            char command[MAX_DATA_SIZE] = {};
-            // todo think about it
-            sprintf(command, "eog /home/yan/projects/Akinator/DumpFiles/dump%d.png -f", dump_id);
-            system(command);
+            AkinatorShowTree(tree);
+
         } else if (strcasecmp(user_choice, "e") == 0) {
-            printf(YELLOW("A save exit has been triggered. See you soon)\n"));
-
-            FILE* savefile = fopen(SAVEFILE, "w");
-            if (!savefile) {
-                fprintf(stderr, RED("FILE ERROR!\n"));
-
-                return FILE_ERROR;
-            }
-
-            WriteTree(savefile, tree);
-            fclose(savefile);
+            StartAkinatorSaveExit(tree);
 
             break;
         } else if (strcasecmp(user_choice, "w") == 0) {
@@ -170,8 +144,8 @@ FuncReturnCode StartAkinator(Tree* tree) {
 }
 
 FuncReturnCode PlayGame(Tree* tree, Node* node) {
-    ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n")
-    ASSERT(node != NULL, "NULL POINTER WAS PASSED!\n")
+    ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n");
+    ASSERT(node != NULL, "NULL POINTER WAS PASSED!\n");
 
     char user_ans[MAX_USER_ANS] = {};
 
@@ -195,8 +169,8 @@ FuncReturnCode PlayGame(Tree* tree, Node* node) {
 }
 
 FuncReturnCode AkinatorAddUnknownWord(Tree* tree, Node* node) {
-    ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n")
-    ASSERT(node != NULL, "NULL POINTER WAS PASSED!\n")
+    ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n");
+    ASSERT(node != NULL, "NULL POINTER WAS PASSED!\n");
 
     char* new_word = (char*) calloc(MAX_DATA_SIZE, sizeof(char));
     if (!new_word) {
@@ -226,8 +200,8 @@ FuncReturnCode AkinatorAddUnknownWord(Tree* tree, Node* node) {
 }
 
 Node* AkinatorChoiceNode(Node* node, char* user_ans) {
-    ASSERT(node     != NULL, "NULL POINTER WAS PASSED!\n")
-    ASSERT(user_ans != NULL, "NULL POINTER WAS PASSED!\n")
+    ASSERT(node     != NULL, "NULL POINTER WAS PASSED!\n");
+    ASSERT(user_ans != NULL, "NULL POINTER WAS PASSED!\n");
 
     while (node->left != NULL || node->right != NULL) {
         printf(YELLOW("%s? [yes/no]\n"), node->data);
@@ -252,9 +226,9 @@ Node* AkinatorChoiceNode(Node* node, char* user_ans) {
 }
 
 FuncReturnCode AkinatorEndGame(Tree* tree, Node* node, char* user_ans) {
-    ASSERT(tree     != NULL, "NULL POINTER WAS PASSED!\n")
-    ASSERT(node     != NULL, "NULL POINTER WAS PASSED!\n")
-    ASSERT(user_ans != NULL, "NULL POINTER WAS PASSED!\n")
+    ASSERT(tree     != NULL, "NULL POINTER WAS PASSED!\n");
+    ASSERT(node     != NULL, "NULL POINTER WAS PASSED!\n");
+    ASSERT(user_ans != NULL, "NULL POINTER WAS PASSED!\n");
 
     while (scanf("%s", user_ans)) {
         if (strcasecmp(user_ans, "yes") == 0) {
@@ -278,7 +252,7 @@ FuncReturnCode AkinatorEndGame(Tree* tree, Node* node, char* user_ans) {
 }
 
 void StartAkinatorGuess(Tree* tree) {
-    ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n")
+    ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n");
     char start_game[50] = {}; //! TODO ! magic const
 
     printf(CYAN("Hello, I'm an akinator and I can guess the sport (I know %lu sports) that you guessed!\n"), tree->size);
@@ -310,6 +284,24 @@ void StartAkinatorGuess(Tree* tree) {
             printf(CYAN("Do you want to start the game? [yes/no]\n"));
         }
     }
+}
+
+void StartAkinatorDefinition(Tree* tree) {
+    ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n");
+
+    printf(CYAN("Determining which object you want to get?\n"));
+
+    char object[MAX_DATA_SIZE] = {};
+    READ(object);
+
+    NodePath* obj_path = NodePathInit(object, tree->size);
+
+    if (AkinatorGiveDefenition(tree, obj_path)) {
+        fprintf(stderr, RED("No element in tree\n"));
+    }
+
+    NodePathClean(obj_path);
+    sleep(1);
 }
 
 int AkinatorGiveDefenition(Tree* tree, NodePath* node_path) {
@@ -431,4 +423,38 @@ const char* ReadCommandArgs(const int argc, char* const *argv) {
     }
 
     return NULL;
+}
+
+FuncReturnCode StartAkinatorSaveExit(Tree* tree) {
+    ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n");
+
+    printf(YELLOW("A save exit has been triggered. See you soon)\n"));
+
+    FILE* savefile = fopen(SAVEFILE, "w");
+    if (!savefile) {
+        fprintf(stderr, RED("FILE ERROR!\n"));
+
+        return FILE_ERROR;
+    }
+    WriteTree(savefile, tree);
+    fclose(savefile);
+
+    return SUCCESS;
+}
+
+FuncReturnCode AkinatorShowTree(Tree* tree) {
+    ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n");
+
+    char command[MAX_DATA_SIZE] = {};
+    int dump_id = TreeDump(tree, __func__, __LINE__, &dump_id, "%s", __func__);
+
+    sprintf(command, "%s%d.png -f", SHOW_TREE_CONST, dump_id);
+    int system_end = system(command);
+    if (system_end != 0) {
+        printf(RED("Something went wrong...\n"));
+
+        return UNKNOWN_ERROR;
+    }
+
+    return SUCCESS;
 }

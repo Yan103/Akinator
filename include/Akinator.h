@@ -20,7 +20,13 @@ FuncReturnCode PlayGame(Tree* tree, Node* node);
 
 void StartAkinatorGuess(Tree* tree);
 
+void StartAkinatorDefinition(Tree* tree);
+
+FuncReturnCode StartAkinatorSaveExit(Tree* tree);
+
 FuncReturnCode StartAkinator(Tree* tree);
+
+FuncReturnCode AkinatorShowTree(Tree* tree);
 
 int AkinatorGiveDefenition(Tree* tree, NodePath* node_path);
 

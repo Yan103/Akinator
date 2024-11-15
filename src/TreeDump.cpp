@@ -6,7 +6,7 @@ const char* LOG_FILENAME            = "/home/yan/projects/Akinator/DumpFiles/log
 const char* DOT_FILENAME            = "/home/yan/projects/Akinator/DumpFiles/dump.dot";
 const int   COMMAND_BUFFER_CONSTANT = 500;
 
-FuncReturnCode TreeDump(Tree* tree, const char* func, int line, int* id, const char* title, ...) {
+int TreeDump(Tree* tree, const char* func, int line, int* id, const char* title, ...) {
     ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n")
     ASSERT(id   != NULL, "NULL POINTER WAS PASSED!\n")
 
@@ -14,7 +14,7 @@ FuncReturnCode TreeDump(Tree* tree, const char* func, int line, int* id, const c
     if (!dot_file) {
         printf(RED("Error occured while opening input file!\n"));
 
-        return FILE_ERROR;
+        return -1;
     }
 
     CreateDotBase(dot_file, tree);
@@ -28,7 +28,7 @@ FuncReturnCode TreeDump(Tree* tree, const char* func, int line, int* id, const c
     if (command == NULL) {
         printf(RED("MEMORY ERROR!\n"));
 
-        return MEMORY_ERROR;
+        return -2;
     }
     fclose(dot_file);
 
@@ -40,7 +40,7 @@ FuncReturnCode TreeDump(Tree* tree, const char* func, int line, int* id, const c
         printf(RED("Something went wrong...\n"));
         FREE(command)
 
-        return UNKNOWN_ERROR;
+        return -3;
     }
     FREE(command)
 
@@ -48,7 +48,7 @@ FuncReturnCode TreeDump(Tree* tree, const char* func, int line, int* id, const c
     if (!html_file) {
         printf(RED("Error occured while opening input file!\n"));
 
-        return FILE_ERROR;
+        return -1;
     }
 
     fprintf(html_file, "<pre>\n<hr>\n    <font size=\"10\">");
@@ -65,7 +65,7 @@ FuncReturnCode TreeDump(Tree* tree, const char* func, int line, int* id, const c
     MakeHTMLDump(html_file, tree, dump_id, func, line);
     fclose(html_file);
 
-    return SUCCESS;
+    return dump_id;
 }
 
 /*!
