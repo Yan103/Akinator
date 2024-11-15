@@ -7,6 +7,7 @@
 #include "FuncReturnCode.h"
 
 const char* SAVEFILE = "/home/yan/projects/Akinator/WordBase/savedtree.txt";
+const char* DATABASE = "/home/yan/projects/Akinator/WordBase/words.txt";
 
 FuncReturnCode StartAkinator(Tree* tree) {
     ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n")
@@ -365,4 +366,39 @@ FuncReturnCode AkinatorShowSimilarity(Tree* tree,
     }
 
     return SUCCESS;
+}
+
+const char* ReadCommandArgs(const int argc, char* const *argv) {
+    ASSERT(argv != NULL, "NULL POINTER WAS PASSED!\n");
+
+    int       opt = 0;
+    int have_args = 0;
+
+    while((opt = getopt(argc, argv, "f")) != -1) {
+        have_args = 1;
+        switch (opt) {
+            case 'f':
+                if (argc == 3) {
+
+                    return argv[2];
+                } else {
+                    printf(RED("Your file has not been found! The standard text file (%s) is launched:\n"),
+                                                                                      DATABASE);
+                    return DATABASE;
+                }
+                break;
+            default:
+                printf(RED("Flag error!\n"));
+
+                return NULL;
+        }
+    }
+
+    if (!have_args) {
+        printf(BLUE("Command line arguments are not received, default file (%s) are launched\n"), DATABASE);
+
+        return DATABASE;
+    }
+
+    return NULL;
 }

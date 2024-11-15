@@ -17,7 +17,7 @@ BIN_DIR   = build
 SOURCES   = $(wildcard $(SRC_DIR)/*.cpp)
 INCLUDES  = $(wildcard $(INC_DIR)/*.h)
 OBJECTS   = $(SOURCES:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
-EXECUTABLE= $(BIN_DIR)/list
+EXECUTABLE= $(BIN_DIR)/akinator
 EXTENSION1= .html
 EXTENSION2= .png
 DUMP_DIR  = DumpFiles

@@ -9,6 +9,7 @@ enum FuncReturnCode {
     FILE_ERROR      = -2,
     UNKNOWN_ERROR   = -3,
     TREE_READ_ERROR = -4,
+    UNKNOWN_FLAG    = -5,
 };
 
 #endif // FUNCRETURNCODE_H

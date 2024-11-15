@@ -8,29 +8,33 @@
 
 #include "TreeDump.h"
 
-// todo argc argv
-const char* DATABASE = "/home/yan/projects/Akinator/WordBase/words.txt";
+int main(const int argc, char* const *argv) {
+    ASSERT(argv != NULL, "NULL PONTER WAS PASSED!\n");
 
-// TODO documentation and README
-// TODO read filename from command line
+    srand((unsigned int)time(NULL));
 
-int main() {
-    srand((unsigned)time(NULL));
+    const char* db_file = ReadCommandArgs(argc, argv);
 
-    FILE* database = fopen(DATABASE, "r");
-    if (!database) {
-        fprintf(stderr, RED("FILE ERROR!\n"));
+    if (db_file) {
+        FILE* database = fopen(db_file, "r");
+        if (!database) {
+            printf(RED("FILE ERROR!\n"));
 
-        return FILE_ERROR;
+            return FILE_ERROR;
+        }
+        Tree* tree = TreeCtor(ReadSubTree(database));
+
+        fclose(database);
+
+        StartAkinator(tree);
+
+        TreeDtor(tree);
+    } else {
+        fprintf(stderr, RED("SOMETHING WENT WRONG...\n"));
+
+        return UNKNOWN_ERROR;
     }
-
-    Tree* tree = TreeCtor(ReadSubTree(database));
-
-    fclose(database);
-
-    StartAkinator(tree);
-
-    TreeDtor(tree);
 
     return SUCCESS;
 }
+

@@ -32,5 +32,6 @@ FuncReturnCode AkinatorShowSimilarity(Tree* tree,
                                       char*  first_obj, char**  first_path, int*  first_logic_path,
                                       char* second_obj, char** second_path, int* second_logic_path);
 
+const char* ReadCommandArgs(const int argc, char* const *argv);
 
 #endif // AKINATOR_H
