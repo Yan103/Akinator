@@ -7,6 +7,7 @@
 
 #include "TreeDump.h"
 
+
 Tree* TreeCtor(Node* root) {
     ASSERT(root != NULL, "NULL POINTER WAS PASSED!\n");
 
@@ -38,7 +39,7 @@ Node* CreateNode(NodeData value) {
 }
 
 int string_compare(const NodeData first_string, const NodeData secong_string) {
-    ASSERT(first_string != NULL, "NULL PONTER WAS PASSED!\n");
+    ASSERT(first_string  != NULL, "NULL PONTER WAS PASSED!\n");
     ASSERT(secong_string != NULL, "NULL PONTER WAS PASSED!\n");
 
     return strcasecmp(first_string, secong_string);
@@ -48,7 +49,7 @@ FuncReturnCode TreeInsertNode(Tree* tree, Node* node, NodeData value, CompType c
     ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n");
     ASSERT(node != NULL, "NULL POINTER WAS PASSED!\n");
 
-    TREE_DUMP(tree, 0, "Start: %s (%s)", __func__, value);
+    TREE_DUMP(tree, "Start: %s (%s)", __func__, value);
 
     int comp_res = comp_func(value, node->data);
 
@@ -68,7 +69,7 @@ FuncReturnCode TreeInsertNode(Tree* tree, Node* node, NodeData value, CompType c
 
     tree->size += 1;
 
-    TREE_DUMP(tree, 0, "End: %s (%s)", __func__, value);
+    TREE_DUMP(tree, "End: %s (%s)", __func__, value);
 
     return SUCCESS;
 }
@@ -149,7 +150,7 @@ Node* ReadSubTree(FILE* filename) {
     node->left  = ReadSubTree(filename);
     node->right = ReadSubTree(filename);
 
-    symbol = SkipUntilFindSymbol(filename, symbol, '}');
+    symbol      = SkipUntilFindSymbol(filename, symbol, '}');
 
     return node;
 }

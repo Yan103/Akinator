@@ -6,9 +6,8 @@ const char* LOG_FILENAME            = "/home/yan/projects/Akinator/DumpFiles/log
 const char* DOT_FILENAME            = "/home/yan/projects/Akinator/DumpFiles/dump.dot";
 const int   COMMAND_BUFFER_CONSTANT = 500;
 
-int TreeDump(Tree* tree, const char* func, int line, int* id, const char* title, ...) {
-    ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n")
-    ASSERT(id   != NULL, "NULL POINTER WAS PASSED!\n")
+int TreeDump(Tree* tree, const char* func, int line, const char* title, ...) {
+    ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n");
 
     FILE* dot_file = fopen(DOT_FILENAME, "w");
     if (!dot_file) {
@@ -22,7 +21,6 @@ int TreeDump(Tree* tree, const char* func, int line, int* id, const char* title,
     fprintf(dot_file, "\n}");
 
     int dump_id = rand();
-    *id = dump_id;
 
     char* command = (char*) calloc(COMMAND_BUFFER_CONSTANT, sizeof(char));
     if (command == NULL) {
@@ -42,7 +40,7 @@ int TreeDump(Tree* tree, const char* func, int line, int* id, const char* title,
 
         return -3;
     }
-    FREE(command)
+    FREE(command);
 
     FILE* html_file = fopen(LOG_FILENAME, "a");
     if (!html_file) {
@@ -83,42 +81,46 @@ static tm GetTime() {
     \param  [in] filename - filename .dot file for DUMP
 */
 FuncReturnCode CreateDotBase(FILE* filename, Tree* tree) {
-    ASSERT(filename != NULL, "NULL POINTER WAS PASSED!\n")
+    ASSERT(filename != NULL, "NULL POINTER WAS PASSED!\n");
 
     fprintf(filename, "digraph tree{\n    node[shape=record,fontsize=14];\n    splines=ortho\n    ");
     fprintf(filename, "info[label=\"root=%p\"]\n", tree->root);
-    NEWDOTLINE(filename)
+    NEWDOTLINE(filename);
 
     return SUCCESS;
 }
 
 FuncReturnCode CreateDotNode(FILE* filename, Node* node) {
-    ASSERT(node     != NULL, "NULL POINTER WAS PASSED!\n")
-    ASSERT(filename != NULL, "NULL POINTER WAS PASSED!\n")
+    ASSERT(node     != NULL, "NULL POINTER WAS PASSED!\n");
+    ASSERT(filename != NULL, "NULL POINTER WAS PASSED!\n");
 
     if (node->left) {
-        fprintf(filename, "\tnode%p[shape=Mrecord,style=\"rounded,filled\",fillcolor=\"lightgreen\",label=\"{ %s }\"]\n", node, node->data);
+        fprintf(filename, "\tnode%p[shape=Mrecord,style=\"rounded,filled\",fillcolor=\"lightgreen\","
+                          "label=\"{ %s }\"]\n", node, node->data);
         fprintf(filename, "\tnode%p->node%p[xlabel=\"No\"]\n", node, node->left);
         CreateDotNode(filename, node->left);
     } else {
-        fprintf(filename, "\tnode%p[shape=Mrecord,style=\"rounded,filled\",fillcolor=\"lightpink\",label=\"{ %s }\"]\n", node, node->data);
+        fprintf(filename, "\tnode%p[shape=Mrecord,style=\"rounded,filled\",fillcolor=\"lightpink\","
+                          "label=\"{ %s }\"]\n", node, node->data);
     }
 
     if (node->right) {
-        fprintf(filename, "\tnode%p[shape=Mrecord,style=\"rounded,filled\",fillcolor=\"lightgreen\",label=\"{ %s }\"]\n", node, node->data);
+        fprintf(filename, "\tnode%p[shape=Mrecord,style=\"rounded,filled\",fillcolor=\"lightgreen\","
+                          "label=\"{ %s }\"]\n", node, node->data);
         fprintf(filename, "\tnode%p->node%p[xlabel=\"Yes\"]\n", node, node->right);
         CreateDotNode(filename, node->right);
     } else {
-        fprintf(filename, "\tnode%p[shape=Mrecord,style=\"rounded,filled\",fillcolor=\"lightpink\",label=\"{ %s }\"]\n", node, node->data);
+        fprintf(filename, "\tnode%p[shape=Mrecord,style=\"rounded,filled\",fillcolor=\"lightpink\","
+                          "label=\"{ %s }\"]\n", node, node->data);
     }
 
     return SUCCESS;
 }
 
 FuncReturnCode MakeHTMLDump(FILE* html_file, Tree* tree, int dump_id, const char* func, int line) {
-    ASSERT(tree      != NULL, "NULL POINTER WAS PASSED!\n")
-    ASSERT(html_file != NULL, "NULL POINTER WAS PASSED!\n")
-    ASSERT(func      != NULL, "NULL POINTER WAS PASSED!\n")
+    ASSERT(tree      != NULL, "NULL POINTER WAS PASSED!\n");
+    ASSERT(html_file != NULL, "NULL POINTER WAS PASSED!\n");
+    ASSERT(func      != NULL, "NULL POINTER WAS PASSED!\n");
 
     struct tm tm = GetTime();
 

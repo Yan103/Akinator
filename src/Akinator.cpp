@@ -59,7 +59,7 @@ FuncReturnCode StartAkinator(Tree* tree) {
 
     char user_choice[MAX_USER_ANS] = {};
 
-    while (scanf("%s", user_choice)) {
+    while (scanf("%[^\n]", user_choice)) {
         if (strcasecmp(user_choice, "g") == 0) {
             StartAkinatorGuess(tree);
 
@@ -86,6 +86,7 @@ FuncReturnCode StartAkinator(Tree* tree) {
         }
         printf(YELLOW("What do you want:\n"
                       "[G]uess, [D]efine, [C]ompare objects, [S]how the tree, [E]xit with or [w]ithout saving?\n"));
+        fgetc(stdin);
     }
 
     return SUCCESS;
@@ -101,10 +102,18 @@ FuncReturnCode PlayGame(Tree* tree, Node* node) {
 
     char answer[MAX_DATA_SIZE] = {};
 
-    system("espeak \"I think, it is...\"");
+    if (system("espeak \"I think, it is...\"")) {
+        fprintf(stderr, RED("Something went wrong...\n"));
+
+        return UNKNOWN_ERROR;
+    }
     sleep(2);
     sprintf(answer, "espeak \"%s\"", node->data);
-    system(answer);
+    if (system(answer)) {
+        fprintf(stderr, RED("Something went wrong...\n"));
+
+        return UNKNOWN_ERROR;
+    }
     printf("I think, it is... "),
     printf(GREEN("%s\n"), node->data);  //* test espeak system
 
@@ -150,9 +159,10 @@ Node* AkinatorChoiceNode(Node* node, char* user_ans) {
     ASSERT(node     != NULL, "NULL POINTER WAS PASSED!\n");
     ASSERT(user_ans != NULL, "NULL POINTER WAS PASSED!\n");
 
+    fgetc(stdin);
     while (node->left != NULL || node->right != NULL) {
         printf(YELLOW("%s? [yes/no]\n"), node->data);
-        while (scanf("%s", user_ans)) {
+        while (scanf("%[^\n]", user_ans)) {
             if (strcasecmp(user_ans, "yes") == 0 || strcasecmp(user_ans, "no") == 0) {
                 break;
             } else {
@@ -160,6 +170,7 @@ Node* AkinatorChoiceNode(Node* node, char* user_ans) {
                 sleep(1);
                 printf(YELLOW("%s? [yes/no]\n"), node->data);
             }
+            fgetc(stdin);
         }
 
         if (strcasecmp(user_ans, "yes") == 0) {
@@ -167,6 +178,7 @@ Node* AkinatorChoiceNode(Node* node, char* user_ans) {
         } else {
             node = node->left;
         }
+        fgetc(stdin);
     }
 
     return node;
@@ -177,7 +189,7 @@ FuncReturnCode AkinatorEndGame(Tree* tree, Node* node, char* user_ans) {
     ASSERT(node     != NULL, "NULL POINTER WAS PASSED!\n");
     ASSERT(user_ans != NULL, "NULL POINTER WAS PASSED!\n");
 
-    while (scanf("%s", user_ans)) {
+    while (scanf("%[^\n]", user_ans)) {
         if (strcasecmp(user_ans, "yes") == 0) {
             printf(GREEN("Oh yes, I won again!\n"));
 
@@ -193,6 +205,7 @@ FuncReturnCode AkinatorEndGame(Tree* tree, Node* node, char* user_ans) {
             sleep(1);
             printf("Did I guess right?? [yes/no]\n");
         }
+        fgetc(stdin);
     }
 
     return SUCCESS;
@@ -200,19 +213,22 @@ FuncReturnCode AkinatorEndGame(Tree* tree, Node* node, char* user_ans) {
 
 void StartAkinatorGuess(Tree* tree) {
     ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n");
-    char start_game[50] = {}; //! TODO ! magic const
+
+    char start_game[MAX_USER_ANS] = {};
 
     printf(CYAN("Hello, I'm an akinator and I can guess the sport (I know %lu sports) that you guessed!\n"), tree->size);
     printf(CYAN("Do you want to start the game? [yes/no]\n"));
 
-    while (scanf("%49s", start_game)) {
+    fgetc(stdin);
+    while (scanf("%[^\n]", start_game)) {
         if (strcasecmp(start_game, "yes") == 0) {
             PlayGame(tree, tree->root);
 
             while (1) {
                 sleep(2);
                 printf(MAGENTA("Do you want to play again? [yes/no]\n"));
-                scanf("%49s", start_game);
+                fgetc(stdin);
+                scanf("%[^\n]", start_game);
                 if (strcasecmp(start_game, "yes") == 0) {
                     PlayGame(tree, tree->root);
                 } else if (strcasecmp(start_game, "no") == 0) {
@@ -220,6 +236,7 @@ void StartAkinatorGuess(Tree* tree) {
                     break;
                 } else {
                     printf(RED("Please, answer only \"yes\" or \"no\")\n"));
+                    fgetc(stdin);
                 }
             }
             break;
@@ -230,7 +247,9 @@ void StartAkinatorGuess(Tree* tree) {
             printf(RED("Please, answer only \"yes\" or \"no\")\n"));
             printf(CYAN("Do you want to start the game? [yes/no]\n"));
         }
+        fgetc(stdin);
     }
+    sleep(1);
 }
 
 void StartAkinatorDefinition(Tree* tree) {
@@ -350,7 +369,7 @@ const char* ReadCommandArgs(const int argc, char* const *argv) {
                 }
                 break;
             default:
-                printf(RED("Flag error!\n"));
+                fprintf(stderr, RED("Flag error!\n"));
                 return NULL;
         }
     }
@@ -384,12 +403,12 @@ FuncReturnCode StartAkinatorShowTree(Tree* tree) {
     ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n");
 
     char command[MAX_DATA_SIZE] = {};
-    int dump_id = TreeDump(tree, __func__, __LINE__, &dump_id, "%s", __func__);
+    int dump_id = TreeDump(tree, __func__, __LINE__, "%s", __func__);
 
     sprintf(command, "%s%d.png -f", SHOW_TREE_CONST, dump_id);
-    int system_end = system(command);
-    if (system_end != 0) {
-        printf(RED("Something went wrong...\n"));
+
+    if (system(command)) {
+        fprintf(stderr, RED("Something went wrong...\n"));
 
         return UNKNOWN_ERROR;
     }
@@ -438,4 +457,6 @@ void StartAkinatorCompare(Tree* tree) {
 
     NodePathClean(obj1_path);
     NodePathClean(obj2_path);
+
+    sleep(1);
 }

@@ -1,8 +1,6 @@
 #ifndef FUNCRETURNCODE_H
 #define FUNCRETURNCODE_H
 
-// #include <stdio.h>
-
 enum FuncReturnCode {
     SUCCESS         =  0,
     MEMORY_ERROR    = -1,
