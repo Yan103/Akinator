@@ -22,7 +22,7 @@ void StartAkinatorGuess(Tree* tree);
 
 FuncReturnCode StartAkinator(Tree* tree);
 
-int AkinatorGiveDefenition(Tree* tree, const char* find_data, char** path, int* logic_path);
+int AkinatorGiveDefenition(Tree* tree, NodePath* node_path);
 
 FuncReturnCode AkinatorShowDifference(Tree* tree,
                                       char*  first_obj, char**  first_path, int*  first_logic_path,

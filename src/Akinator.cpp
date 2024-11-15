@@ -9,16 +9,57 @@
 const char* SAVEFILE = "/home/yan/projects/Akinator/WordBase/savedtree.txt";
 const char* DATABASE = "/home/yan/projects/Akinator/WordBase/words.txt";
 
+#define READ(buffer) { fgetc(stdin); scanf("%[^\n]", buffer); }
+
+static NodePath* NodePathInit(NodeData data, size_t size) {
+    ASSERT(data != NULL, "NULL POINTER WAS PASSED!\n");
+
+    NodePath* node_path = (NodePath*) calloc(1, sizeof(NodePath));
+    if (!node_path) {
+        fprintf(stderr, RED("MEMORY ERROR!\n"));
+
+        return NULL;
+    }
+    node_path->data = data;
+
+    NodeData* path = (NodeData*) calloc(size, sizeof(NodePath));
+    if (!path) {
+        fprintf(stderr, RED("MEMORY ERROR!\n"));
+
+        return NULL;
+    }
+    node_path->path = path;
+
+    int* logic_path = (int*) calloc(size, sizeof(int));
+    if (!logic_path) {
+        fprintf(stderr, RED("MEMORY ERROR!\n"));
+
+        return NULL;
+    }
+    node_path->logic_path = logic_path;
+
+    return node_path;
+}
+
+static void NodePathClean(NodePath* node_path) {
+    ASSERT(node_path != NULL, "NULL POINTER WAS PASSED!\n");
+
+    FREE(node_path->logic_path);
+    FREE(node_path->path);
+    FREE(node_path);
+}
+
 FuncReturnCode StartAkinator(Tree* tree) {
     ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n")
 
     printf(CYAN("Hi, I am an Akinator and I can guess the words that you have made up\n"));
-    printf(YELLOW("What do you want:\n[G]uess, [D]efine, [C]ompare objects, [S]how the tree, [E]xit with or [w]ithout saving?\n"));
+    printf(YELLOW("What do you want:\n"
+                  "[G]uess, [D]efine, [C]ompare objects, [S]how the tree, [E]xit with or [w]ithout saving?\n"));
 
     char user_choice[MAX_USER_ANS] = {};
 
     while (scanf("%s", user_choice)) {
-        // todo switch
+        // todo switch?
         if (strcasecmp(user_choice, "g") == 0) {
             StartAkinatorGuess(tree);
 
@@ -26,28 +67,15 @@ FuncReturnCode StartAkinator(Tree* tree) {
             printf(CYAN("Determining which object you want to get?\n"));
 
             char object[MAX_DATA_SIZE] = {};
-            fgetc(stdin);
-            scanf("%[^\n]", object); // todo fix
+            READ(object);
 
-            char** path = (char**) calloc(1, tree->size * sizeof(char**));
-            if (!path) {
-                fprintf(stderr, RED("MEMORY ERROR!\n"));
+            NodePath* obj_path = NodePathInit(object, tree->size);
 
-                return MEMORY_ERROR;
-            }
-            int* logic_path = (int*) calloc(1, tree->size * sizeof(int*));
-            if (!logic_path) {
-                fprintf(stderr, RED("MEMORY ERROR!\n"));
-
-                return MEMORY_ERROR;
-            }
-
-            if (AkinatorGiveDefenition(tree, object, path, logic_path)) {
+            if (AkinatorGiveDefenition(tree, obj_path)) {
                 fprintf(stderr, RED("No element in tree\n"));
             }
 
-            FREE(path)
-            FREE(logic_path)
+            NodePathClean(obj_path);
             sleep(1);
         // todo fix copypastaaaaa
         } else if (strcasecmp(user_choice, "c") == 0) {
@@ -56,19 +84,17 @@ FuncReturnCode StartAkinator(Tree* tree) {
 
             printf(CYAN("Enter the 2 objects you want to compare:\n"));
 
-            fgetc(stdin);
-            scanf("%[^\n]", first_object);
-            fgetc(stdin);
-            scanf("%[^\n]", second_object);
+            READ(first_object);
+            READ(second_object);
 
-            char** path1 = (char**) calloc(1, tree->size * sizeof(char**));
+            char** path1 = (char**) calloc(tree->size, sizeof(char**));
             if (!path1) {
                 fprintf(stderr, RED("MEMORY ERROR!\n"));
 
                 return MEMORY_ERROR;
             }
-            // todo calloc (tree->size, sizeof())
-            int* logic_path1 = (int*) calloc(1, tree->size * sizeof(int*));
+
+            int* logic_path1 = (int*) calloc(tree->size, sizeof(int*));
             if (!logic_path1) {
                 fprintf(stderr, RED("MEMORY ERROR!\n"));
 
@@ -76,13 +102,13 @@ FuncReturnCode StartAkinator(Tree* tree) {
             }
             int first_res = TreeFindElem(tree->root, first_object, path1, logic_path1);
 
-            char** path2 = (char**) calloc(1, tree->size * sizeof(char**));
+            char** path2 = (char**) calloc(tree->size, sizeof(char**));
             if (!path2) {
                 fprintf(stderr, RED("MEMORY ERROR!\n"));
 
                 return MEMORY_ERROR;
             }
-            int* logic_path2 = (int*) calloc(1, tree->size * sizeof(int*));
+            int* logic_path2 = (int*) calloc(tree->size, sizeof(int*));
             if (!logic_path2) {
                 fprintf(stderr, RED("MEMORY ERROR!\n"));
 
@@ -123,7 +149,9 @@ FuncReturnCode StartAkinator(Tree* tree) {
 
                 return FILE_ERROR;
             }
+
             WriteTree(savefile, tree);
+            fclose(savefile);
 
             break;
         } else if (strcasecmp(user_choice, "w") == 0) {
@@ -149,7 +177,7 @@ FuncReturnCode PlayGame(Tree* tree, Node* node) {
 
     node = AkinatorChoiceNode(node, user_ans);
 
-    char answer[100] = {};
+    char answer[MAX_DATA_SIZE] = {};
 
     system("espeak \"I think, it is...\"");
     sleep(2);
@@ -158,7 +186,7 @@ FuncReturnCode PlayGame(Tree* tree, Node* node) {
     printf("I think, it is... "),
     printf(GREEN("%s\n"), node->data);  //* test espeak system
 
-    // todo если захочешь todo todo
+    // todo если захочешь todo todo // не захотел :/
     printf("Did I guess right? [yes/no]\n");
 
     AkinatorEndGame(tree, node, user_ans);
@@ -170,25 +198,23 @@ FuncReturnCode AkinatorAddUnknownWord(Tree* tree, Node* node) {
     ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n")
     ASSERT(node != NULL, "NULL POINTER WAS PASSED!\n")
 
-    char* new_word = (char*) calloc(1, MAX_DATA_SIZE * sizeof(char));
+    char* new_word = (char*) calloc(MAX_DATA_SIZE, sizeof(char));
     if (!new_word) {
         fprintf(stderr, RED("MEMORY ERROR!\n"));
 
         return MEMORY_ERROR;
     }
-    fgetc(stdin);
-    scanf("%[^\n]", new_word); //!
+    READ(new_word);
 
-    printf("Please, write how %s differs from %s\n", new_word, node->data);
+    printf("Please, write how \"%s\" differs from \"%s\"\n", new_word, node->data);
 
-    char* new_question = (char*) calloc(1, MAX_DATA_SIZE * sizeof(char));
+    char* new_question = (char*) calloc(MAX_DATA_SIZE, sizeof(char));
     if (!new_question) {
         fprintf(stderr, RED("MEMORY ERROR!\n"));
 
         return MEMORY_ERROR;
     }
-    fgetc(stdin);
-    scanf("%[^\n]", new_question); //!
+    READ(new_question);
 
     node->left  = CreateNode(node->data);
     node->right = CreateNode(new_word);
@@ -255,7 +281,6 @@ void StartAkinatorGuess(Tree* tree) {
     ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n")
     char start_game[50] = {}; //! TODO ! magic const
 
-    // TODO espeak voice || + time sleep
     printf(CYAN("Hello, I'm an akinator and I can guess the sport (I know %lu sports) that you guessed!\n"), tree->size);
     printf(CYAN("Do you want to start the game? [yes/no]\n"));
 
@@ -287,29 +312,41 @@ void StartAkinatorGuess(Tree* tree) {
     }
 }
 
-int AkinatorGiveDefenition(Tree* tree, const char* find_data, char** path, int* logic_path) {
-    ASSERT(tree       != NULL, "NULL POINTER WAS PASSED!\n")
-    ASSERT(find_data  != NULL, "NULL POINTER WAS PASSED!\n")
-    ASSERT(path       != NULL, "NULL POINTER WAS PASSED!\n")
-    ASSERT(logic_path != NULL, "NULL POINTER WAS PASSED!\n")
+int AkinatorGiveDefenition(Tree* tree, NodePath* node_path) {
+    ASSERT(tree      != NULL, "NULL POINTER WAS PASSED!\n");
+    ASSERT(node_path != NULL, "NULL POINTER WAS PASSED!\n");
 
-    if (TreeFindElem(tree->root, find_data, path, logic_path)) {
-        printf(YELLOW("%s: "), find_data);
+    if (TreeFindElem(tree->root, node_path->data, node_path->path, node_path->logic_path)) {
+        printf(YELLOW("%s: "), node_path->data);
         for (size_t i = 0; i < tree->size - 1; i++) {
-            if (path[i]) {
-                if (logic_path[i] == 1) {
-                    printf("%s ", path[i]);
+            if (node_path->path[i]) {
+                if (node_path->logic_path[i] == 1) {
+                    printf("%s ", node_path->path[i]);
                 } else {
-                    printf(RED("NO ") "%s ", path[i]);
+                    printf(RED("NO ") "%s ", node_path->path[i]);
                 }
-                if (strcasecmp(path[i + 1], find_data) != 0) {printf("| ");}
-                else {printf("\n"); break;}
+                if (strcasecmp(node_path->path[i + 1], node_path->data) != 0) {
+                    printf("| ");
+                }
+                else {
+                    printf("\n");
+                    break;
+                }
             }
         }
         return 0;
     } else {
         return 1;
     }
+}
+
+static void ShowDifference(char* object, int no_label, char* difference) {
+    ASSERT(object     != NULL, "NULL POINTER WAS PASSED!\n");
+    ASSERT(difference != NULL, "NULL POINTER WAS PASSED!\n");
+
+    printf(YELLOW("%s: "), object);
+    if (no_label == -1) printf(RED("NO "));
+    printf("%s\n", difference);
 }
 
 FuncReturnCode AkinatorShowDifference(Tree* tree,
@@ -325,13 +362,9 @@ FuncReturnCode AkinatorShowDifference(Tree* tree,
 
     for (size_t i = 0; i < tree->size - 1; i++) {
         if (strcasecmp(first_path[i], second_path[i]) != 0 || (first_logic_path[i] != second_logic_path[i])) {
-            printf(YELLOW("%s: "), first_obj);
-            if (first_logic_path[i] == -1) printf(RED("NO "));
-            printf("%s\n", first_path[i]);
-            // todo copypasta
-            printf(YELLOW("%s: "), second_obj);
-            if (second_logic_path[i] == -1) printf(RED("NO "));
-            printf("%s\n", second_path[i]);
+            ShowDifference( first_obj,  first_logic_path[i],  first_path[i]);
+            ShowDifference(second_obj, second_logic_path[i], second_path[i]);
+
             break;
         }
     }
@@ -379,7 +412,6 @@ const char* ReadCommandArgs(const int argc, char* const *argv) {
         switch (opt) {
             case 'f':
                 if (argc == 3) {
-
                     return argv[2];
                 } else {
                     printf(RED("Your file has not been found! The standard text file (%s) is launched:\n"),
@@ -389,14 +421,12 @@ const char* ReadCommandArgs(const int argc, char* const *argv) {
                 break;
             default:
                 printf(RED("Flag error!\n"));
-
                 return NULL;
         }
     }
 
     if (!have_args) {
         printf(BLUE("Command line arguments are not received, default file (%s) are launched\n"), DATABASE);
-
         return DATABASE;
     }
 

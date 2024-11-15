@@ -32,7 +32,7 @@ Node* CreateNode(NodeData value) {
         return NULL;
     }
 
-    node->data  = value;
+    node->data = value;
 
     return node;
 }

@@ -26,6 +26,13 @@ struct Tree {
     Node*    root;
     size_t   size;
 };
+// TODO size_t  lists;
+
+struct NodePath {
+    char**      path;
+    NodeData    data;
+    int*  logic_path;
+};
 
 const size_t MAX_DATA_SIZE = 500;
 
