@@ -1,11 +1,29 @@
+/*!
+    \file
+    File with binary tree DUMP functions
+*/
+
 #include <stdio.h>
 
 #include "TreeDump.h"
 
+/// @brief Constant for LOG filename
 const char* LOG_FILENAME            = "/home/yan/projects/Akinator/DumpFiles/log.html";
+
+/// @brief Constant for DOT filename
 const char* DOT_FILENAME            = "/home/yan/projects/Akinator/DumpFiles/dump.dot";
+
+/// @brief Constant for command busser size
 const int   COMMAND_BUFFER_CONSTANT = 500;
 
+/*!
+    @brief Function that calls DUMP
+    \param [out] tree   - pointer on tree
+    \param  [in] func   - call function name
+    \param  [in] line   - call function line
+    \param  [in] title  - information about call function
+    @return The DUMP id
+*/
 int TreeDump(Tree* tree, const char* func, int line, const char* title, ...) {
     ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n");
 
@@ -68,6 +86,7 @@ int TreeDump(Tree* tree, const char* func, int line, const char* title, ...) {
 
 /*!
     @brief Function that returns time in what function was launched
+    @return The information about the current time
 */
 static tm GetTime() {
     time_t time_now = time(NULL);
@@ -77,8 +96,9 @@ static tm GetTime() {
 
 /*!
     @brief Function that creates base for DUMP
-    \param [out] tree     - pointer on tree
-    \param  [in] filename - filename .dot file for DUMP
+    \param [in] filename - filename .dot file for DUMP
+    \param [in]     tree - pointer on tree
+    @return The status of the function (return code)
 */
 FuncReturnCode CreateDotBase(FILE* filename, Tree* tree) {
     ASSERT(filename != NULL, "NULL POINTER WAS PASSED!\n");
@@ -90,6 +110,12 @@ FuncReturnCode CreateDotBase(FILE* filename, Tree* tree) {
     return SUCCESS;
 }
 
+/*!
+    @brief Function that creates node in DUMP
+    \param [in] filename - filename .dot file for DUMP
+    \param [in]     node - pointer on node
+    @return The status of the function (return code)
+*/
 FuncReturnCode CreateDotNode(FILE* filename, Node* node) {
     ASSERT(node     != NULL, "NULL POINTER WAS PASSED!\n");
     ASSERT(filename != NULL, "NULL POINTER WAS PASSED!\n");
@@ -117,6 +143,15 @@ FuncReturnCode CreateDotNode(FILE* filename, Node* node) {
     return SUCCESS;
 }
 
+/*!
+    @brief Function that creates HTML file with DUMP
+    \param [in] filename - filename .html file for DUMP
+    \param [in]     tree - pointer on tree
+    \param [in]  dump_id - dump id
+    \param [in]     func - call function name
+    \param [in]     line - call function line
+    @return The status of the function (return code)
+*/
 FuncReturnCode MakeHTMLDump(FILE* html_file, Tree* tree, int dump_id, const char* func, int line) {
     ASSERT(tree      != NULL, "NULL POINTER WAS PASSED!\n");
     ASSERT(html_file != NULL, "NULL POINTER WAS PASSED!\n");

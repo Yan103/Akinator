@@ -1,12 +1,15 @@
+/*!
+    \file
+    File with the main function
+*/
+
 #include <stdio.h>
 #include <time.h>
 
-#include "FuncReturnCode.h"
+#include "Akinator.h"
 #include "BinaryTree.h"
 #include "Default.h"
-#include "Akinator.h"
-
-#include "TreeDump.h"
+#include "FuncReturnCode.h"
 
 int main(const int argc, char* const *argv) {
     ASSERT(argv != NULL, "NULL PONTER WAS PASSED!\n");
@@ -37,4 +40,3 @@ int main(const int argc, char* const *argv) {
 
     return SUCCESS;
 }
-

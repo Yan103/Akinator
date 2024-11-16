@@ -1,6 +1,12 @@
+/*!
+    \file
+    File with return codes enum
+*/
+
 #ifndef FUNCRETURNCODE_H
 #define FUNCRETURNCODE_H
 
+/// @brief Enum with return functions codes
 enum FuncReturnCode {
     SUCCESS         =  0,
     MEMORY_ERROR    = -1,

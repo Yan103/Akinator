@@ -1,17 +1,31 @@
+/*!
+    \file
+    File with Akinator's functions
+*/
+
 #include <stdio.h>
 
 #include "Akinator.h"
-#include "Default.h"
 #include "BinaryTree.h"
-#include "TreeDump.h"
+#include "Default.h"
 #include "FuncReturnCode.h"
+#include "TreeDump.h"
 
+/// @brief Constant for default database savefile
 const char* SAVEFILE        = "/home/yan/projects/Akinator/WordBase/savedtree.txt";
+
+/// @brief Constant for default database file
 const char* DATABASE        = "/home/yan/projects/Akinator/WordBase/words.txt";
+
+/// @brief Constant for show binary tree on the screen
 const char* SHOW_TREE_CONST = "eog /home/yan/projects/Akinator/DumpFiles/dump";
 
-#define READ(buffer) { fgetc(stdin); scanf("%[^\n]", buffer); }
-
+/*!
+    @brief Function that create NodePath struct for the node
+    \param [in] data - pointer on node data
+    \param [in] size - count of nodes
+    @return The pointer on NodePath struct
+*/
 static NodePath* NodePathInit(NodeData data, size_t size) {
     ASSERT(data != NULL, "NULL POINTER WAS PASSED!\n");
 
@@ -42,6 +56,10 @@ static NodePath* NodePathInit(NodeData data, size_t size) {
     return node_path;
 }
 
+/*!
+    @brief Function that clean NodePath struct
+    \param [out] node_path - pointer on NodePath struct
+*/
 static void NodePathClean(NodePath* node_path) {
     ASSERT(node_path != NULL, "NULL POINTER WAS PASSED!\n");
 
@@ -50,6 +68,11 @@ static void NodePathClean(NodePath* node_path) {
     FREE(node_path);
 }
 
+/*!
+    @brief Function that launces the Akinator
+    \param [in] tree - pointer on tree
+    @return The status of the function (return code)
+*/
 FuncReturnCode StartAkinator(Tree* tree) {
     ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n");
 
@@ -92,6 +115,12 @@ FuncReturnCode StartAkinator(Tree* tree) {
     return SUCCESS;
 }
 
+/*!
+    @brief Function that starts Akinator's game
+    \param [in] tree - pointer on tree
+    \param [in] node - pointer on node
+    @return The status of the function (return code)
+*/
 FuncReturnCode PlayGame(Tree* tree, Node* node) {
     ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n");
     ASSERT(node != NULL, "NULL POINTER WAS PASSED!\n");
@@ -124,6 +153,12 @@ FuncReturnCode PlayGame(Tree* tree, Node* node) {
     return SUCCESS;
 }
 
+/*!
+    @brief Function that adds new (unknown word) in the tree
+    \param  [in] tree - pointer on tree
+    \param [out] node - pointer on node
+    @return The status of the function (return code)
+*/
 FuncReturnCode AkinatorAddUnknownWord(Tree* tree, Node* node) {
     ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n");
     ASSERT(node != NULL, "NULL POINTER WAS PASSED!\n");
@@ -155,6 +190,12 @@ FuncReturnCode AkinatorAddUnknownWord(Tree* tree, Node* node) {
     return SUCCESS;
 }
 
+/*!
+    @brief Function that changes the current node depending on the user's response
+    \param [out] node     - pointer on node
+    \param  [in] user_ans - user's answer
+    @return The pointer on the selected node
+*/
 Node* AkinatorChoiceNode(Node* node, char* user_ans) {
     ASSERT(node     != NULL, "NULL POINTER WAS PASSED!\n");
     ASSERT(user_ans != NULL, "NULL POINTER WAS PASSED!\n");
@@ -184,6 +225,13 @@ Node* AkinatorChoiceNode(Node* node, char* user_ans) {
     return node;
 }
 
+/*!
+    @brief Function that ends Akinator's guess mode
+    \param [in] tree     - pointer on tree
+    \param [in] node     - pointer on node
+    \param [in] user_ans - user's answer
+    @return The status of the function (return code)
+*/
 FuncReturnCode AkinatorEndGame(Tree* tree, Node* node, char* user_ans) {
     ASSERT(tree     != NULL, "NULL POINTER WAS PASSED!\n");
     ASSERT(node     != NULL, "NULL POINTER WAS PASSED!\n");
@@ -211,6 +259,10 @@ FuncReturnCode AkinatorEndGame(Tree* tree, Node* node, char* user_ans) {
     return SUCCESS;
 }
 
+/*!
+    @brief Function that starts the Akinator guess mode
+    \param [in] tree - pointer on tree
+*/
 void StartAkinatorGuess(Tree* tree) {
     ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n");
 
@@ -252,6 +304,10 @@ void StartAkinatorGuess(Tree* tree) {
     sleep(1);
 }
 
+/*!
+    @brief Function that starts Akinator give defenition mode
+    \param [in] tree - pointer on tree
+*/
 void StartAkinatorDefinition(Tree* tree) {
     ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n");
 
@@ -262,7 +318,7 @@ void StartAkinatorDefinition(Tree* tree) {
 
     NodePath* obj_path = NodePathInit(object, tree->size);
 
-    if (AkinatorGiveDefenition(tree, obj_path)) {
+    if (AkinatorGiveDefinition(tree, obj_path)) {
         fprintf(stderr, RED("No element in tree\n"));
     }
 
@@ -270,7 +326,13 @@ void StartAkinatorDefinition(Tree* tree) {
     sleep(1);
 }
 
-int AkinatorGiveDefenition(Tree* tree, NodePath* node_path) {
+/*!
+    @brief Function that definse the object
+    \param [in] tree - pointer on tree
+    \param [in] node - pointer on node
+    @return 0 if it was possible to find such an element and give a definition, otherwise 1
+*/
+int AkinatorGiveDefinition(Tree* tree, NodePath* node_path) {
     ASSERT(tree      != NULL, "NULL POINTER WAS PASSED!\n");
     ASSERT(node_path != NULL, "NULL POINTER WAS PASSED!\n");
 
@@ -298,6 +360,12 @@ int AkinatorGiveDefenition(Tree* tree, NodePath* node_path) {
     }
 }
 
+/*!
+    @brief Function that shows the difference
+    \param [in] object     - object's data
+    \param [in] no_label   - logic path value
+    \param [in] difference - pointer on the difference value
+*/
 static void ShowDifference(char* object, int no_label, char* difference) {
     ASSERT(object     != NULL, "NULL POINTER WAS PASSED!\n");
     ASSERT(difference != NULL, "NULL POINTER WAS PASSED!\n");
@@ -307,6 +375,13 @@ static void ShowDifference(char* object, int no_label, char* difference) {
     printf("%s\n", difference);
 }
 
+/*!
+    @brief Function that starts Akinator show difference mode
+    \param [in] tree      - pointer on tree
+    \param [in] obj1_path - pointer on struct NodePath (first objects)
+    \param [in] obj2_path - pointer on struct NodePath (second objects)
+    @return The status of the function (return code)
+*/
 FuncReturnCode AkinatorShowDifference(Tree* tree, NodePath* obj1_path, NodePath* obj2_path) {
     ASSERT(tree      != NULL, "NULL POINTER WAS PASSED!\n");
     ASSERT(obj1_path != NULL, "NULL POINTER WAS PASSED!\n");
@@ -326,6 +401,13 @@ FuncReturnCode AkinatorShowDifference(Tree* tree, NodePath* obj1_path, NodePath*
     return SUCCESS;
 }
 
+/*!
+    @brief Function that starts Akinator show similarity mode
+    \param [in] tree      - pointer on tree
+    \param [in] obj1_path - pointer on struct NodePath (first objects)
+    \param [in] obj2_path - pointer on struct NodePath (second objects)
+    @return The status of the function (return code)
+*/
 FuncReturnCode AkinatorShowSimilarity(Tree* tree, NodePath* obj1_path, NodePath* obj2_path) {
     ASSERT(tree      != NULL, "NULL POINTER WAS PASSED!\n");
     ASSERT(obj1_path != NULL, "NULL POINTER WAS PASSED!\n");
@@ -350,6 +432,12 @@ FuncReturnCode AkinatorShowSimilarity(Tree* tree, NodePath* obj1_path, NodePath*
     return SUCCESS;
 }
 
+/*!
+    @brief Function that reads command line arguments for read filename
+    \param [in] argc - argument count
+    \param [in] argv - pointer on argument values
+    @return The database filename
+*/
 const char* ReadCommandArgs(const int argc, char* const *argv) {
     ASSERT(argv != NULL, "NULL POINTER WAS PASSED!\n");
 
@@ -382,6 +470,11 @@ const char* ReadCommandArgs(const int argc, char* const *argv) {
     return NULL;
 }
 
+/*!
+    @brief Function that launches Akinator exit with saving
+    \param [in] tree - pointer on tree
+    @return The status of the function (return code)
+*/
 FuncReturnCode StartAkinatorSaveExit(Tree* tree) {
     ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n");
 
@@ -399,6 +492,11 @@ FuncReturnCode StartAkinatorSaveExit(Tree* tree) {
     return SUCCESS;
 }
 
+/*!
+    @brief Function that starts the Akinator show tree mode
+    \param [in] tree - pointer on tree
+    @return The status of the function (return code)
+*/
 FuncReturnCode StartAkinatorShowTree(Tree* tree) {
     ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n");
 
@@ -415,7 +513,14 @@ FuncReturnCode StartAkinatorShowTree(Tree* tree) {
 
     return SUCCESS;
 }
-
+/*!
+    @brief Function that starts Akinator compare mode
+    \param [in]       tree - pointer on tree
+    \param [in]  first_res - first result of compare function
+    \param [in] second_res - second result of compare function
+    \param [in]  obj1_path - pointer on struct NodePath (first objects)
+    \param [in]  obj2_path - pointer on struct NodePath (second objects)
+*/
 static void ShowCompareResult(Tree* tree, int first_res, int second_res, NodePath* obj1_path, NodePath* obj2_path) {
     ASSERT(tree      != NULL, "NULL POINTER WAS PASSED!\n");
     ASSERT(obj1_path != NULL, "NULL POINTER WAS PASSED!\n");
@@ -436,6 +541,10 @@ static void ShowCompareResult(Tree* tree, int first_res, int second_res, NodePat
     }
 }
 
+/*!
+    @brief Function that starts Akinator compare mode
+    \param  [in] tree - pointer on tree
+*/
 void StartAkinatorCompare(Tree* tree) {
     ASSERT(tree != NULL, "NULL POINTER WAS PASSED!\n");
 
