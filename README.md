@@ -1,7 +1,7 @@
 # **Akinator**
 
 
-<img align="left" width="180" height="200" src="img/img1.jpg">
+<img align="left" width="180" height="190" src="img/img1.jpg">
 
 <div style="margin-left: 190px;">
 
