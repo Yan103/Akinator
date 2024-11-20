@@ -360,20 +360,6 @@ int AkinatorGiveDefinition(Tree* tree, NodePath* node_path) {
     }
 }
 
-/*!
-    @brief Function that shows the difference
-    \param [in] object     - object's data
-    \param [in] no_label   - logic path value
-    \param [in] difference - pointer on the difference value
-*/
-static void ShowDifference(char* object, int no_label, char* difference) {
-    ASSERT(object     != NULL, "NULL POINTER WAS PASSED!\n");
-    ASSERT(difference != NULL, "NULL POINTER WAS PASSED!\n");
-
-    printf(YELLOW("%s: "), object);
-    if (no_label == -1) printf(RED("NO "));
-    printf("%s\n", difference);
-}
 
 /*!
     @brief Function that starts Akinator show difference mode
@@ -391,13 +377,25 @@ FuncReturnCode AkinatorShowDifference(Tree* tree, NodePath* obj1_path, NodePath*
         if (strcasecmp(obj1_path->path[i], obj2_path->path[i]) != 0
             || (obj1_path->logic_path[i] != obj2_path->logic_path[i])) {
 
-            ShowDifference(obj1_path->data, obj1_path->logic_path[i], obj1_path->path[i]);
-            ShowDifference(obj2_path->data, obj2_path->logic_path[i], obj2_path->path[i]);
+            if (strcasecmp(obj1_path->path[i], obj1_path->data) != 0) {
+                if (obj1_path->logic_path[i] == -1) printf(RED("NO "));
 
-            break;
+                if (strcasecmp(obj1_path->path[i + 2], obj1_path->data) == 0) {
+                    printf("%s and ", obj1_path->path[i]);
+                } else {
+                    if (strcasecmp(obj1_path->path[i + 1], obj1_path->data) == 0) {
+                        printf("%s\n", obj1_path->path[i]);
+                        
+                        break;
+                    } else {
+                        printf("%s, ", obj1_path->path[i]);
+                    }
+                }
+            } else {
+                break;
+            }
         }
     }
-
     return SUCCESS;
 }
 
@@ -414,7 +412,7 @@ FuncReturnCode AkinatorShowSimilarity(Tree* tree, NodePath* obj1_path, NodePath*
     ASSERT(obj2_path != NULL, "NULL POINTER WAS PASSED!\n");
 
     if (obj1_path->logic_path[0] != obj2_path->logic_path[0]) {
-        printf(CYAN("The objects don't have anything similar\n"));
+        printf(RED("The objects don't have anything similar\n"));
 
         return SUCCESS;
     }
@@ -422,8 +420,22 @@ FuncReturnCode AkinatorShowSimilarity(Tree* tree, NodePath* obj1_path, NodePath*
     for (size_t i = 0; i < tree->size - 1; i++) {
         if (strcasecmp(obj1_path->path[i], obj2_path->path[i]) == 0
             && (obj1_path->logic_path[i] == obj2_path->logic_path[i])) {
-            if (obj1_path->logic_path[i] == -1) printf(RED("NO "));
-            printf("%s\n", obj1_path->path[i]);
+
+                if (strcasecmp(obj1_path->path[i + 1], obj2_path->path[i + 1]) != 0
+                    || (obj1_path->logic_path[i + 1] != obj2_path->logic_path[i + 1])) {
+                        printf(" and ");
+                        if (obj1_path->logic_path[i] == -1) printf(RED("NO "));
+                        printf("%s\n", obj1_path->path[i]);
+                    }
+                else {
+                    if (obj1_path->logic_path[i] == -1) printf(RED("NO "));
+                    printf("%s", obj1_path->path[i]);
+
+                    if (strcasecmp(obj1_path->path[i + 2], obj2_path->path[i + 2]) == 0
+                         && (obj1_path->logic_path[i + 2] == obj2_path->logic_path[i + 2])) {
+                        printf(", ");
+                    }
+                }
         } else {
             break;
         }
@@ -532,11 +544,11 @@ static void ShowCompareResult(Tree* tree, int first_res, int second_res, NodePat
         if (strcasecmp(obj1_path->data, obj2_path->data) == 0) {
             printf(CYAN("The objects are the same\n"));
         } else {
-            printf(CYAN("Object \"%s\" differs from object \"%s\" in that:\n"), obj1_path->data, obj2_path->data);
-            AkinatorShowDifference(tree, obj1_path, obj2_path);
-
             printf(CYAN("Object \"%s\" is similar to object \"%s\" in that:\n"), obj1_path->data, obj2_path->data);
             AkinatorShowSimilarity(tree, obj1_path, obj2_path);
+
+            printf(CYAN("Object \"%s\" differs from object \"%s\" in that:\n"), obj1_path->data, obj2_path->data);
+            AkinatorShowDifference(tree, obj1_path, obj2_path);
         }
     }
 }
