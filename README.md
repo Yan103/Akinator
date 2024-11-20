@@ -11,6 +11,7 @@ At the moment, a database is being used with various sports, ranging from well-k
 
 </div>
 
+
 ## Installation and compilation
 To run the program on your computer, download the repository and run the Makefile
 1. Cloning a repository
